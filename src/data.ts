@@ -220,22 +220,28 @@ export const circle = [
   { name: "Uncle Ben", role: "Family", initial: "B", color: "var(--heat)" },
 ];
 
-export type FamilyItem =
-  | { type: "photos"; who: string; initial: string; color: string; title: string; sub: string; likes: number; replies: number; shots: number[] }
-  | { type: "react"; who: string; initial: string; color: string; text: string; quote: string; ago: string }
-  | { type: "card"; title: string; sub: string };
+export type FamilyPost = {
+  id: string;
+  kind: "photos" | "clip" | "card" | "milestone" | "text";
+  who: string;
+  initial: string;
+  color: string;
+  title: string;
+  sub?: string;
+  body?: string;
+  photos?: number[];
+  love: number;
+  fire: number;
+  comments: number;
+  ago: string;
+};
 
-export const familyFeed: FamilyItem[] = [
-  {
-    type: "photos", who: "Dad", initial: "D", color: "var(--our)",
-    title: "Dad added 2 photos", sub: "to Maya's goal · 58' · 2h ago",
-    likes: 4, replies: 6, shots: [21, 22],
-  },
-  {
-    type: "react", who: "Grandma", initial: "G", color: "var(--away)",
-    text: "Grandma reacted to the 41' sprint", quote: "unstoppable!", ago: "5h ago",
-  },
-  { type: "card", title: "New card minted · Match 9", sub: "Maya's Matchday Card is ready · 1d ago" },
+export const familyFeed: FamilyPost[] = [
+  { id: "p1", kind: "photos", who: "Dad", initial: "D", color: "var(--our)", title: "Dad added 2 photos", sub: "to Maya's goal · 58'", photos: [21, 22], love: 4, fire: 2, comments: 6, ago: "2h" },
+  { id: "p2", kind: "clip", who: "Coach Rae", initial: "R", color: "var(--card-blue)", title: "Coach shared the 41' sprint", sub: "\"Fastest she's run all season\"", love: 6, fire: 5, comments: 3, ago: "5h" },
+  { id: "p3", kind: "milestone", who: "Maya", initial: "M", color: "var(--amber)", title: "Maya hit 7 goals this season", sub: "A new personal best", love: 12, fire: 9, comments: 4, ago: "1d" },
+  { id: "p4", kind: "card", who: "Matchday", initial: "M9", color: "var(--card-navy)", title: "New card minted · Match 9", sub: "Maya's Matchday Card is ready", love: 8, fire: 3, comments: 2, ago: "1d" },
+  { id: "p5", kind: "text", who: "Grandma", initial: "G", color: "var(--away)", title: "Grandma", body: "So proud of you sweetheart — can't wait to be there Saturday!", love: 5, fire: 1, comments: 1, ago: "2d" },
 ];
 
 export const momentThread = {
