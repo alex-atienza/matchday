@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vite
+
+# internal — kept local, not shared publicly
+CLAUDE.md
+PROJECT-NOTES.md
+.claude/
