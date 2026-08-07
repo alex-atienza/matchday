@@ -10,7 +10,7 @@ import { homeFeed, img, nextMatch, type FeedItem } from "../data";
 export default function HomeFeed() {
   const nav = useNav();
   return (
-    <motion.div className="pad stack" style={{ gap: 12, paddingBottom: 20 }} variants={listContainer} initial="hidden" animate="show">
+    <motion.div className="pad stack" style={{ gap: 12, paddingTop: 6, paddingBottom: 20 }} variants={listContainer} initial="hidden" animate="show">
       {/* pinned next match */}
       <motion.button
         variants={listItem}
