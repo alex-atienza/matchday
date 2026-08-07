@@ -161,54 +161,150 @@ export const replayDots: { x: number; y: number; team: "our" | "their" }[] = [
 /* ---------- CARDS ---------- */
 export const seasonStats = { goals: 7, assists: 6, topKmh: 23.4, badges: 8, minted: 9, total: 12 };
 
-export type Card = {
+export type CardTier = "legendary" | "heat" | "clean" | "playmaker" | "debut" | "standard";
+
+export type MatchCard = {
   id: string;
   matchId?: string;
-  rating?: number;
-  label: string;
-  result?: string;
-  locked?: boolean;
+  locked?: false;
+  tier: CardTier;
+  rating: number;
+  headline: string;
+  opponent: string;
+  date: string;
+  result: string;
+  serial: string;
+  /** grid emphasis on the shelf */
+  span?: "hero" | "wide";
+  photo?: number;
+  stats: { label: string; value: string }[];
+  zones: { label: string; pct: number; color: string }[];
+  moments: { min: number; title: string; desc: string }[];
 };
 
-export const cards: Card[] = [
-  { id: "M9", matchId: "m9", rating: 9.2, label: "PB · BRACE", result: "W 3–2" },
-  { id: "M8", matchId: "m8", rating: 7.8, label: "ASSIST", result: "D 1–1" },
-  { id: "M7", matchId: "m7", rating: 8.1, label: "CLEAN", result: "W 2–0" },
-  { id: "M6", matchId: "m6", rating: 7.4, label: "4.8 KM", result: "W 1–0" },
-  { id: "M5", matchId: "m5", rating: 8.0, label: "GOAL", result: "L 2–3" },
-  { id: "M4", matchId: "m4", rating: 9.0, label: "BRACE", result: "W 4–1" },
-  { id: "M3", matchId: "m3", rating: 7.9, label: "GOAL", result: "W 3–1" },
-  { id: "M2", rating: 7.2, label: "SOLID", result: "D 0–0" },
-  { id: "M1", rating: 7.5, label: "FIRST GAME", result: "W 2–1" },
-  { id: "M10", label: "SAT 9 AM", locked: true },
-  { id: "M11", label: "—", locked: true },
-  { id: "M12", label: "—", locked: true },
+export type LockedCard = { id: string; locked: true; label: string };
+
+export type ShelfCard = MatchCard | LockedCard;
+
+const Z = (walk: number, jog: number, run: number, sprint: number) => [
+  { label: "Walk", pct: walk, color: "var(--away)" },
+  { label: "Jog", pct: jog, color: "var(--our)" },
+  { label: "Run", pct: run, color: "var(--amber)" },
+  { label: "Sprint", pct: sprint, color: "var(--heat)" },
 ];
 
-export const cardDetail = {
-  id: "M9",
-  opponent: "Falcons FC",
-  result: "W 3–2",
-  date: "Sat, May 18",
-  rating: 9.2,
-  stats: [
-    { label: "Goals", value: "2" },
-    { label: "Assists", value: "0" },
-    { label: "Shots", value: "4" },
-    { label: "Pass %", value: "88" },
-    { label: "Distance", value: "4.9 km" },
-    { label: "Top km/h", value: "23.4" },
-  ],
-  zones: [
-    { label: "Walk", pct: 38, color: "var(--away)" },
-    { label: "Jog", pct: 34, color: "var(--our)" },
-    { label: "Run", pct: 20, color: "var(--amber)" },
-    { label: "Sprint", pct: 8, color: "var(--heat)" },
-  ],
-  goals: [
-    { min: 12, title: "The cutback", desc: "Jess drives the byline and pulls it back; Maya sweeps it first-time into the far corner." },
-    { min: 58, title: "Near-post dart", desc: "A run in behind the full-back, left foot across the keeper — the winner." },
-  ],
+export const cards: ShelfCard[] = [
+  {
+    id: "M9", matchId: "m9", tier: "legendary", rating: 9.2, headline: "Brace · Personal best",
+    opponent: "Falcons FC", date: "Sat, May 18", result: "W 3–2", serial: "009 / 012", span: "hero", photo: 21,
+    stats: [
+      { label: "Goals", value: "2" }, { label: "Assists", value: "0" }, { label: "Shots", value: "4" },
+      { label: "Pass %", value: "88" }, { label: "Distance", value: "4.9 km" }, { label: "Top km/h", value: "23.4" },
+    ],
+    zones: Z(38, 34, 20, 8),
+    moments: [
+      { min: 12, title: "The cutback", desc: "Jess drives the byline and pulls it back; Maya sweeps it first-time into the far corner." },
+      { min: 58, title: "Near-post dart", desc: "A run in behind the full-back, left foot across the keeper — the winner." },
+    ],
+  },
+  {
+    id: "M8", matchId: "m8", tier: "playmaker", rating: 7.8, headline: "The assist",
+    opponent: "Rangers", date: "Sat, May 11", result: "D 1–1", serial: "008 / 012",
+    stats: [
+      { label: "Goals", value: "0" }, { label: "Assists", value: "1" }, { label: "Key passes", value: "5" },
+      { label: "Pass %", value: "91" }, { label: "Distance", value: "5.2 km" }, { label: "Top km/h", value: "22.1" },
+    ],
+    zones: Z(42, 36, 17, 5),
+    moments: [{ min: 22, title: "Whipped cross", desc: "Maya beats her marker on the outside and hangs it up for Priya to tap in." }],
+  },
+  {
+    id: "M7", matchId: "m7", tier: "clean", rating: 8.1, headline: "Clean sheet",
+    opponent: "Comets", date: "Sat, May 4", result: "W 2–0", serial: "007 / 012",
+    stats: [
+      { label: "Goals", value: "1" }, { label: "Assists", value: "0" }, { label: "Tackles", value: "6" },
+      { label: "Pass %", value: "85" }, { label: "Distance", value: "5.0 km" }, { label: "Top km/h", value: "22.8" },
+    ],
+    zones: Z(40, 33, 21, 6),
+    moments: [{ min: 18, title: "Low drive", desc: "Twenty yards out, no backlift — straight into the bottom corner." }],
+  },
+  {
+    id: "M6", matchId: "m6", tier: "heat", rating: 7.4, headline: "Distance record",
+    opponent: "United", date: "Sat, Apr 27", result: "W 1–0", serial: "006 / 012", span: "wide",
+    stats: [
+      { label: "Goals", value: "0" }, { label: "Assists", value: "1" }, { label: "Sprints", value: "24" },
+      { label: "Pass %", value: "82" }, { label: "Distance", value: "4.8 km" }, { label: "Top km/h", value: "21.9" },
+    ],
+    zones: Z(30, 33, 26, 11),
+    moments: [{ min: 71, title: "The lung-buster", desc: "A 60-metre recovery run to win it back, then the pass that made the winner." }],
+  },
+  {
+    id: "M5", matchId: "m5", tier: "standard", rating: 8.0, headline: "Goal + assist",
+    opponent: "Kestrels", date: "Sat, Apr 20", result: "L 2–3", serial: "005 / 012",
+    stats: [
+      { label: "Goals", value: "1" }, { label: "Assists", value: "1" }, { label: "Shots", value: "3" },
+      { label: "Pass %", value: "79" }, { label: "Distance", value: "4.6 km" }, { label: "Top km/h", value: "23.0" },
+    ],
+    zones: Z(36, 35, 21, 8),
+    moments: [{ min: 40, title: "Header back across", desc: "Rose highest at the back post and nodded it back for the equaliser." }],
+  },
+  {
+    id: "M4", matchId: "m4", tier: "legendary", rating: 9.0, headline: "Brace away",
+    opponent: "Athletic", date: "Sat, Apr 13", result: "W 4–1", serial: "004 / 012",
+    stats: [
+      { label: "Goals", value: "2" }, { label: "Assists", value: "1" }, { label: "Shots", value: "5" },
+      { label: "Pass %", value: "86" }, { label: "Distance", value: "5.1 km" }, { label: "Top km/h", value: "22.5" },
+    ],
+    zones: Z(34, 34, 23, 9),
+    moments: [
+      { min: 9, title: "Early opener", desc: "First touch of the game, first goal of the game." },
+      { min: 66, title: "Solo run", desc: "Picked it up on halfway, went past two, finished low." },
+    ],
+  },
+  {
+    id: "M3", matchId: "m3", tier: "standard", rating: 7.9, headline: "The opener",
+    opponent: "Rovers", date: "Sat, Apr 6", result: "W 3–1", serial: "003 / 012",
+    stats: [
+      { label: "Goals", value: "1" }, { label: "Assists", value: "0" }, { label: "Shots", value: "2" },
+      { label: "Pass %", value: "84" }, { label: "Distance", value: "4.4 km" }, { label: "Top km/h", value: "21.7" },
+    ],
+    zones: Z(41, 34, 19, 6),
+    moments: [{ min: 27, title: "Toe-poke", desc: "Quickest reaction in the box after the keeper spilled it." }],
+  },
+  {
+    id: "M2", tier: "standard", rating: 7.2, headline: "Held the line",
+    opponent: "Wanderers", date: "Sat, Mar 30", result: "D 0–0", serial: "002 / 012",
+    stats: [
+      { label: "Goals", value: "0" }, { label: "Assists", value: "0" }, { label: "Tackles", value: "4" },
+      { label: "Pass %", value: "80" }, { label: "Distance", value: "4.2 km" }, { label: "Top km/h", value: "21.2" },
+    ],
+    zones: Z(45, 33, 17, 5),
+    moments: [{ min: 55, title: "Goal-line block", desc: "Tracked all the way back to hook it off the line." }],
+  },
+  {
+    id: "M1", tier: "debut", rating: 7.5, headline: "First whistle",
+    opponent: "Harriers", date: "Sat, Mar 23", result: "W 2–1", serial: "001 / 012", photo: 45,
+    stats: [
+      { label: "Goals", value: "0" }, { label: "Assists", value: "1" }, { label: "Shots", value: "1" },
+      { label: "Pass %", value: "77" }, { label: "Distance", value: "3.9 km" }, { label: "Top km/h", value: "20.8" },
+    ],
+    zones: Z(48, 32, 15, 5),
+    moments: [{ min: 62, title: "Her first assist", desc: "The first of many — a simple square ball, and the bench went up." }],
+  },
+  { id: "M10", locked: true, label: "Sat 9 AM" },
+  { id: "M11", locked: true, label: "—" },
+  { id: "M12", locked: true, label: "—" },
+];
+
+export const getCard = (id: string): MatchCard =>
+  (cards.find((c) => c.id === id && !c.locked) as MatchCard) ?? (cards[0] as MatchCard);
+
+export const TIER_META: Record<CardTier, { rarity: string; note: string }> = {
+  legendary: { rarity: "Legendary", note: "Rating 9.0+" },
+  heat: { rarity: "Rare", note: "A record broken" },
+  clean: { rarity: "Special", note: "Clean sheet" },
+  playmaker: { rarity: "Special", note: "Playmaker" },
+  debut: { rarity: "First edition", note: "Her first match" },
+  standard: { rarity: "Common", note: "Season card" },
 };
 
 /* ---------- FAMILY ---------- */

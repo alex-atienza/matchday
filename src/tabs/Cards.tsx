@@ -3,10 +3,13 @@ import { useNav } from "../nav";
 import Icon from "../components/Icon";
 import CountUp from "../components/CountUp";
 import { listContainer, tilePop, fadeUp } from "../motion";
-import { cards, seasonStats, type Card } from "../data";
+import { cards, img, seasonStats, TIER_META, type MatchCard, type ShelfCard } from "../data";
+import { TIER_STYLE } from "../cardStyles";
 
 export default function Cards() {
   const nav = useNav();
+  const pct = Math.round((seasonStats.minted / seasonStats.total) * 100);
+
   const stats = [
     { label: "Goals", value: seasonStats.goals, dec: 0, hot: false },
     { label: "Assists", value: seasonStats.assists, dec: 0, hot: false },
@@ -21,14 +24,28 @@ export default function Cards() {
           <div className="kicker">Spring 2026</div>
           <h1>Season Shelf</h1>
         </div>
-        <div className="display" style={{ fontSize: 20, color: "var(--amber)" }}>
-          <CountUp to={seasonStats.minted} duration={0.8} /> cards
+        <div style={{ textAlign: "right" }}>
+          <div className="display" style={{ fontSize: 20, color: "var(--amber)", lineHeight: 1 }}>
+            <CountUp to={seasonStats.minted} duration={0.8} />
+            <span style={{ color: "var(--faint)" }}>/{seasonStats.total}</span>
+          </div>
+          <div className="eyebrow" style={{ fontSize: 9, marginTop: 2 }}>Collected</div>
         </div>
       </div>
 
       <div className="scroll">
         <div className="pad" style={{ paddingBottom: 24 }}>
-          {/* stat chips */}
+          {/* collection progress */}
+          <div style={{ height: 4, borderRadius: 2, background: "var(--line)", overflow: "hidden", marginBottom: 16 }}>
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${pct}%` }}
+              transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              style={{ height: "100%", background: "linear-gradient(90deg,var(--amber),var(--heat))" }}
+            />
+          </div>
+
+          {/* season stats */}
           <motion.div style={{ display: "flex", gap: 10 }} variants={listContainer} initial="hidden" animate="show">
             {stats.map((s) => (
               <motion.div
@@ -47,15 +64,15 @@ export default function Cards() {
             ))}
           </motion.div>
 
-          {/* grid */}
+          {/* the shelf */}
           <motion.div
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginTop: 16 }}
+            style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gridAutoRows: "128px", gap: 12, marginTop: 18 }}
             variants={listContainer}
             initial="hidden"
             animate="show"
           >
             {cards.map((c) => (
-              <CardTile key={c.id} card={c} onOpen={() => nav.push({ screen: "cardDetail", params: { id: c.id } })} />
+              <Tile key={c.id} card={c} onOpen={() => nav.push({ screen: "cardDetail", params: { id: c.id } })} />
             ))}
           </motion.div>
 
@@ -76,44 +93,112 @@ export default function Cards() {
   );
 }
 
-function CardTile({ card, onOpen }: { card: Card; onOpen: () => void }) {
+function Tile({ card, onOpen }: { card: ShelfCard; onOpen: () => void }) {
   if (card.locked) {
     return (
       <motion.div
         variants={tilePop}
-        style={{ aspectRatio: "0.82", borderRadius: 14, border: "1px dashed var(--line)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6 }}
+        style={{ borderRadius: 14, border: "1px dashed var(--line)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5 }}
       >
-        <span className="display" style={{ fontSize: 22, color: "var(--faint)" }}>{card.id}</span>
-        <span className="eyebrow" style={{ fontSize: 9, color: "var(--faint)" }}>{card.label}</span>
+        <span className="display" style={{ fontSize: 21, color: "var(--faint)" }}>{card.id}</span>
+        <span className="eyebrow" style={{ fontSize: 8.5, color: "var(--faint)" }}>{card.label}</span>
       </motion.div>
     );
   }
-  const featured = card.id === "M9";
-  return (
-    <motion.button
-      variants={tilePop}
-      whileTap={{ scale: 0.95 }}
-      onClick={onOpen}
+
+  const c = card as MatchCard;
+  const t = TIER_STYLE[c.tier];
+  const meta = TIER_META[c.tier];
+  const hero = c.span === "hero";
+  const wide = c.span === "wide";
+
+  const base = {
+    position: "relative" as const,
+    overflow: "hidden" as const,
+    borderRadius: 14,
+    background: t.bg,
+    border: `1px solid ${t.border}`,
+    boxShadow: t.glow,
+    textAlign: "left" as const,
+    gridColumn: hero || wide ? ("span 2" as const) : undefined,
+    gridRow: hero ? ("span 2" as const) : undefined,
+  };
+
+  const rarity = (
+    <span
       style={{
-        aspectRatio: "0.82",
-        borderRadius: 14,
-        padding: "12px 10px",
-        textAlign: "left",
-        background: "linear-gradient(160deg,#1a2856,#0E1633)",
-        border: featured ? "1px solid var(--amber)" : "1px solid #23306a",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        boxShadow: featured ? "0 0 18px -4px rgba(255,184,0,0.4)" : "none",
+        fontFamily: "var(--font-ui)", fontSize: 8, fontWeight: 800, letterSpacing: "0.14em",
+        textTransform: "uppercase", color: t.light ? t.accent : t.accent,
+        border: `1px solid ${t.light ? "rgba(12,14,16,0.35)" : t.accent}`,
+        borderRadius: 5, padding: "3px 6px", opacity: 0.95,
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <span className="display" style={{ fontSize: 24, color: featured ? "var(--amber)" : "var(--ink)", lineHeight: 1 }}>{card.id}</span>
-        <span className="mono" style={{ fontSize: 11, color: "var(--card-blue)" }}>{card.rating?.toFixed(1)}</span>
+      {meta.rarity}
+    </span>
+  );
+
+  /* ---------- hero (legendary) ---------- */
+  if (hero) {
+    return (
+      <motion.button variants={tilePop} whileTap={{ scale: 0.97 }} onClick={onOpen} style={{ ...base, padding: 16, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        {t.foil && <span className="foil" />}
+        <span className="display" style={{ position: "absolute", right: -8, bottom: -26, fontSize: 150, lineHeight: 1, color: t.accent, opacity: 0.13 }}>9</span>
+        {c.photo && (
+          <img src={img(220, 220, c.photo)} alt="" style={{ position: "absolute", right: -14, top: 14, width: 118, height: 118, objectFit: "cover", borderRadius: 12, opacity: 0.22, transform: "rotate(6deg)" }} />
+        )}
+        <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          {rarity}
+          <div style={{ textAlign: "right" }}>
+            <div className="display" style={{ fontSize: 30, lineHeight: 1, color: t.accent }}>{c.rating.toFixed(1)}</div>
+            <div className="eyebrow" style={{ fontSize: 8, color: t.sub }}>Rating</div>
+          </div>
+        </div>
+        <div style={{ position: "relative" }}>
+          <div className="display" style={{ fontSize: 44, lineHeight: 0.9, color: t.ink }}>{c.id}</div>
+          <div style={{ fontFamily: "var(--font-ui)", fontSize: 12.5, fontWeight: 700, color: t.accent, marginTop: 6 }}>{c.headline}</div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 6 }}>
+            <span className="mono" style={{ fontSize: 10.5, color: t.sub }}>{c.result} · {c.opponent}</span>
+            <span className="mono" style={{ fontSize: 9.5, color: t.sub }}>{c.serial}</span>
+          </div>
+        </div>
+      </motion.button>
+    );
+  }
+
+  /* ---------- wide (record breaker) ---------- */
+  if (wide) {
+    const big = c.stats.find((s) => s.label === "Distance")?.value ?? c.rating.toFixed(1);
+    return (
+      <motion.button variants={tilePop} whileTap={{ scale: 0.97 }} onClick={onOpen} style={{ ...base, padding: 13, display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {rarity}
+          <div className="display" style={{ fontSize: 24, lineHeight: 1, color: t.ink, marginTop: 7 }}>{c.id}</div>
+          <div style={{ fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 700, color: t.accent, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            {c.headline}
+          </div>
+          <div className="mono" style={{ fontSize: 9.5, color: t.sub, marginTop: 3, whiteSpace: "nowrap" }}>{c.result} · {c.serial}</div>
+        </div>
+        <div style={{ textAlign: "right", flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
+          <Icon name="bolt" size={17} color={t.accent} />
+          <div className="display" style={{ fontSize: 27, lineHeight: 1, color: t.ink, whiteSpace: "nowrap" }}>{big}</div>
+        </div>
+      </motion.button>
+    );
+  }
+
+  /* ---------- standard 1×1 ---------- */
+  return (
+    <motion.button variants={tilePop} whileTap={{ scale: 0.95 }} onClick={onOpen} style={{ ...base, padding: 11, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+      {t.foil && <span className="foil" />}
+      <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <span className="display" style={{ fontSize: 23, lineHeight: 1, color: t.ink }}>{c.id}</span>
+        <span className="mono" style={{ fontSize: 10.5, color: t.accent }}>{c.rating.toFixed(1)}</span>
       </div>
-      <div>
-        <div className="eyebrow" style={{ fontSize: 9, color: "var(--amber)" }}>{card.label}</div>
-        <div className="mono" style={{ fontSize: 10, color: "var(--mist)", marginTop: 3 }}>{card.result}</div>
+      <div style={{ position: "relative" }}>
+        <div style={{ fontFamily: "var(--font-ui)", fontSize: 9, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: t.accent, lineHeight: 1.25 }}>
+          {c.headline}
+        </div>
+        <div className="mono" style={{ fontSize: 9.5, color: t.sub, marginTop: 3 }}>{c.result}</div>
       </div>
     </motion.button>
   );

@@ -3,7 +3,8 @@ import Icon from "../components/Icon";
 import CountUp from "../components/CountUp";
 import DetailHeader from "../components/DetailHeader";
 import { listContainer, listItem, tilePop, fadeUp } from "../motion";
-import { cardDetail } from "../data";
+import { getCard, img, TIER_META } from "../data";
+import { TIER_STYLE } from "../cardStyles";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -13,41 +14,62 @@ function splitNum(v: string): { n: number | null; dec: number; suf: string } {
   return { n: parseFloat(m[1]), dec: (m[1].split(".")[1] || "").length, suf: m[2] };
 }
 
-export default function CardDetail(_: { params?: { id: string } }) {
-  const c = cardDetail;
+export default function CardDetail({ params }: { params?: { id?: string } }) {
+  const c = getCard(params?.id ?? "M9");
+  const t = TIER_STYLE[c.tier];
+  const meta = TIER_META[c.tier];
+
   return (
     <div className="screen">
-      <DetailHeader title="MATCHDAY CARD" action={<Icon name="share" size={19} color="var(--mist)" />} />
+      <DetailHeader title={`CARD ${c.id}`} action={<Icon name="share" size={19} color="var(--mist)" />} />
       <div className="scroll">
         <div className="pad" style={{ paddingBottom: 24 }}>
-          {/* card hero */}
+          {/* the card itself */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            style={{ borderRadius: 20, padding: 20, background: "linear-gradient(160deg,#1c2c60 0%,#0E1633 100%)", border: "1px solid var(--amber)", boxShadow: "0 0 30px -8px rgba(255,184,0,0.35)" }}
+            style={{ position: "relative", overflow: "hidden", borderRadius: 20, padding: 20, background: t.bg, border: `1px solid ${t.border}`, boxShadow: t.glow }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            {t.foil && <span className="foil" />}
+            <span className="display" style={{ position: "absolute", right: -10, bottom: -34, fontSize: 190, lineHeight: 1, color: t.accent, opacity: 0.12 }}>9</span>
+            {c.photo && (
+              <img src={img(240, 240, c.photo)} alt="" style={{ position: "absolute", right: -18, top: 18, width: 130, height: 130, objectFit: "cover", borderRadius: 14, opacity: 0.2, transform: "rotate(6deg)" }} />
+            )}
+
+            <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div>
-                <div className="eyebrow" style={{ color: "var(--card-blue)" }}>
-                  {c.date} · {c.result}
+                <span style={{ fontFamily: "var(--font-ui)", fontSize: 9, fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: t.accent, border: `1px solid ${t.light ? "rgba(12,14,16,0.35)" : t.accent}`, borderRadius: 6, padding: "4px 8px" }}>
+                  {meta.rarity}
+                </span>
+                <div className="display" style={{ fontSize: 44, lineHeight: 0.95, marginTop: 12, color: t.ink }}>
+                  Maya <span style={{ color: t.accent }}>#9</span>
                 </div>
-                <div className="display" style={{ fontSize: 40, lineHeight: 1, marginTop: 4 }}>
-                  Maya <span style={{ color: "var(--amber)" }}>#9</span>
-                </div>
-                <div className="muted" style={{ fontSize: 13, marginTop: 2 }}>vs {c.opponent}</div>
+                <div style={{ fontSize: 13, color: t.sub, marginTop: 3 }}>{c.date} · vs {c.opponent}</div>
               </div>
               <div style={{ textAlign: "center" }}>
-                <div className="display" style={{ fontSize: 44, color: "var(--amber)", lineHeight: 1 }}>
+                <div className="display" style={{ fontSize: 44, color: t.accent, lineHeight: 1 }}>
                   <CountUp to={c.rating} decimals={1} duration={1.1} delay={0.2} />
                 </div>
-                <div className="eyebrow" style={{ fontSize: 9, color: "var(--card-blue)" }}>Rating</div>
+                <div className="eyebrow" style={{ fontSize: 9, color: t.sub }}>Rating</div>
               </div>
             </div>
-            <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-              <span className="chip" style={{ background: "rgba(255,184,0,0.14)", borderColor: "rgba(255,184,0,0.5)", color: "var(--amber)", fontSize: 11 }}>PB · BRACE</span>
-              <span className="chip" style={{ background: "rgba(255,255,255,0.06)", borderColor: "transparent", color: "var(--card-blue)", fontSize: 11 }}>Card M9 · 9 of 12</span>
+
+            <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: 18 }}>
+              <div>
+                <div style={{ fontFamily: "var(--font-ui)", fontSize: 13.5, fontWeight: 800, color: t.ink }}>{c.headline}</div>
+                <div className="mono" style={{ fontSize: 11, color: t.sub, marginTop: 3 }}>{c.result}</div>
+              </div>
+              <span className="mono" style={{ fontSize: 10.5, color: t.sub }}>{c.serial}</span>
             </div>
+          </motion.div>
+
+          {/* why it's special */}
+          <motion.div variants={fadeUp} initial="hidden" animate="show" style={{ display: "flex", alignItems: "center", gap: 9, marginTop: 12, padding: "0 2px" }}>
+            <Icon name="target" size={14} color={t.foil ? "var(--amber)" : "var(--mist)"} />
+            <span className="muted" style={{ fontSize: 12.5 }}>
+              <b style={{ color: "var(--body)" }}>{meta.rarity}</b> · {meta.note}
+            </span>
           </motion.div>
 
           {/* stat grid */}
@@ -94,15 +116,17 @@ export default function CardDetail(_: { params?: { id: string } }) {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <Icon name="bolt" size={18} color="var(--amber)" />
               <span style={{ fontSize: 13.5, color: "var(--body)" }}>
-                Top speed <b style={{ color: "var(--ink)" }}>23.4 km/h</b> — season best
+                Top speed <b style={{ color: "var(--ink)" }}>{c.stats.find((s) => s.label === "Top km/h")?.value} km/h</b>
               </span>
             </div>
           </motion.div>
 
-          {/* goals */}
-          <div className="eyebrow" style={{ margin: "22px 2px 12px" }}>How the goals happened</div>
+          {/* moments */}
+          <div className="eyebrow" style={{ margin: "22px 2px 12px" }}>
+            {c.moments.length > 1 ? "The moments" : "The moment"}
+          </div>
           <motion.div className="stack" style={{ gap: 10 }} variants={listContainer} initial="hidden" animate="show">
-            {c.goals.map((g) => (
+            {c.moments.map((g) => (
               <motion.div key={g.min} variants={listItem} className="card" style={{ display: "flex", gap: 12, padding: 14 }}>
                 <div style={{ width: 40, height: 40, borderRadius: 10, background: "color-mix(in srgb, var(--our) 16%, transparent)", color: "var(--our)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 15 }}>
                   {g.min}'
