@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { NavContext, type Nav, type Route, type TabKey } from "./nav";
-import StatusBar from "./components/StatusBar";
 import TabBar from "./components/TabBar";
 import Home from "./tabs/Home";
 import Replays from "./tabs/Replays";
@@ -99,7 +98,6 @@ export default function App() {
     <div className="app-viewport">
       <div className="phone">
         <NavContext.Provider value={nav}>
-          <StatusBar />
           <div className="body">
             <div className="stage">
               <AnimatePresence initial={false} custom={dir} mode="sync">

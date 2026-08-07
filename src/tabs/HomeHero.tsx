@@ -46,7 +46,7 @@ export default function HomeHero() {
       />
 
       {/* wordmark + avatar */}
-      <div style={{ position: "absolute", top: 10, left: 20, right: 20, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ position: "absolute", top: "calc(18px + env(safe-area-inset-top, 0px))", left: 20, right: 20, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span className="display" style={{ fontSize: 17, letterSpacing: "0.06em", color: "var(--ink)" }}>
           Matchday
         </span>

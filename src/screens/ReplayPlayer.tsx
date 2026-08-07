@@ -51,7 +51,7 @@ export default function ReplayPlayer({ params }: { params: { id: string } }) {
       <motion.div
         initial={{ opacity: 0, y: reduce ? 0 : -12 }}
         animate={{ opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE } }}
-        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 16px 12px", flexShrink: 0, zIndex: 41 }}
+        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "calc(18px + env(safe-area-inset-top, 0px)) 16px 12px", flexShrink: 0, zIndex: 41 }}
       >
         <motion.button whileTap={{ scale: 0.9 }} onClick={nav.back} aria-label="Close" style={{ display: "flex" }}>
           <Icon name="x" size={22} color="var(--body)" />

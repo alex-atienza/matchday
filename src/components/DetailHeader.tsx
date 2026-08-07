@@ -15,7 +15,7 @@ export default function DetailHeader({
         display: "flex",
         alignItems: "center",
         gap: 10,
-        padding: "6px 16px 14px",
+        padding: "calc(18px + env(safe-area-inset-top, 0px)) 16px 14px",
         flexShrink: 0,
       }}
     >
