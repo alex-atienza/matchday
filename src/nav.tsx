@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 
-export type TabKey = "home" | "replays" | "cards" | "family";
+/* Route keys stay generic — never a person's name. */
+export type TabKey = "home" | "replays" | "player" | "family";
 
 export type Route = { screen: string; params?: any };
 

@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
 import Icon from "./Icon";
 import type { TabKey } from "../nav";
+import { playerTabLabel } from "../squad";
 
+// The player tab is labelled from the followed player(s), so it scales to any
+// name — and to a family following more than one kid.
 const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: "home", label: "Home", icon: "home" },
   { key: "replays", label: "Replays", icon: "replays" },
-  { key: "cards", label: "Cards", icon: "cards" },
+  { key: "player", label: playerTabLabel(), icon: "star" },
   { key: "family", label: "Family", icon: "family" },
 ];
 

@@ -27,6 +27,25 @@ export const squad: Player[] = [
 
 export const getPlayer = (id: string) => squad.find((p) => p.id === id) ?? squad[7];
 
+/* ---------- who this account follows ----------
+   The tab is named after the player, so the label is derived — never hardcoded.
+   Add ids here and the tab, switcher and content all follow. */
+export const followedIds = ["maya"];
+
+export const followedPlayers = () => followedIds.map(getPlayer);
+
+/** Tab labels get ~9 characters before they crowd the slot. */
+export const shortName = (name: string) => {
+  const first = name.split(" ")[0];
+  return first.length > 9 ? `${first.slice(0, 8)}…` : first;
+};
+
+/** One followed player → her name. More than one → a neutral label. */
+export const playerTabLabel = () => {
+  const list = followedPlayers();
+  return list.length === 1 ? shortName(list[0].name) : "Players";
+};
+
 /* ---------- deterministic per-match lines ----------
    Keeps every player's game stats stable across renders without hand-authoring
    11 players × 9 matches. Goals/assists come from the match's authored scorers. */

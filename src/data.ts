@@ -393,6 +393,74 @@ export const TIER_META: Record<CardTier, { rarity: string; note: string }> = {
   standard: { rarity: "Common", note: "Season card" },
 };
 
+/* ---------- HER TAB: week digest, badges, keepsake ---------- */
+
+export const week = {
+  range: "May 12–18",
+  headline: "Her fastest week yet.",
+  goals: 2,
+  assists: 0,
+  topKmh: 23.4,
+  photo: 33,
+  note: "One new milestone this week — worth a cheer.",
+};
+
+export type Badge = {
+  id: string;
+  name: string;
+  note: string;
+  icon: string;
+  unlocked: boolean;
+  fresh?: boolean;
+};
+
+export const badges: Badge[] = [
+  { id: "hattrick", name: "Brace Hero", note: "2 goals in one match", icon: "trophy", unlocked: true, fresh: true },
+  { id: "speed", name: "Speed Demon", note: "23+ km/h", icon: "bolt", unlocked: true },
+  { id: "iron", name: "Iron Legs", note: "Full match ×5", icon: "check", unlocked: true },
+  { id: "ranger", name: "Long Ranger", note: "Goal from 15m+", icon: "target", unlocked: true },
+  { id: "team", name: "Team Player", note: "5 assists", icon: "users", unlocked: true },
+  { id: "fox", name: "Fox in the Box", note: "6-yard goal", icon: "flame", unlocked: true },
+  { id: "first", name: "First Whistle", note: "Her debut", icon: "star", unlocked: true },
+  { id: "engine", name: "The Engine", note: "40 km in a season", icon: "replays", unlocked: true },
+  { id: "playmaker", name: "Playmaker", note: "10 assists · 6 of 10", icon: "send", unlocked: false },
+  { id: "boot", name: "Golden Boot", note: "Top scorer", icon: "trophy", unlocked: false },
+  { id: "century", name: "Century Club", note: "100 sprints", icon: "bolt", unlocked: false },
+  { id: "ever", name: "Ever-present", note: "Play all 12", icon: "calendar", unlocked: false },
+];
+
+export const keepsake = {
+  filmTitle: "Maya's Spring",
+  filmLength: "3:12",
+  filmNote: "Auto-cut from her 12 best moments.",
+  photo: 91,
+  best: [
+    { matchId: "m9", min: 58, title: "Near-post dart", sub: "vs Falcons · the winner" },
+    { matchId: "m4", min: 66, title: "The solo run", sub: "@ Athletic · past two, finished low" },
+    { matchId: "m9", min: 41, title: "23.4 km/h", sub: "Her fastest run of the season" },
+    { matchId: "m7", min: 18, title: "Low drive", sub: "vs Comets · top corner" },
+    { matchId: "m1", min: 62, title: "Her first assist", sub: "vs Harriers · the bench erupted" },
+  ],
+};
+
+/* Last five results, newest last — goals are that player's, from the scorers. */
+export const formFor = (playerId: string) =>
+  matches
+    .slice(0, 5)
+    .reverse()
+    .map((m) => ({
+      id: m.id,
+      result: m.result,
+      goals: m.scorers.find((s) => s.id === playerId)?.g ?? 0,
+    }));
+
+/* Per-player content. Only the followed player has a full set in this mock —
+   anyone else falls back to an honest empty state rather than borrowing hers. */
+export const weekByPlayer: Record<string, typeof week> = { maya: week };
+export const badgesByPlayer: Record<string, Badge[]> = { maya: badges };
+export const keepsakeByPlayer: Record<string, typeof keepsake> = { maya: keepsake };
+export const cardsByPlayer: Record<string, ShelfCard[]> = { maya: cards };
+
 /* ---------- FAMILY ---------- */
 export const circle = [
   { name: "Maya", role: "Player", initial: "M", color: "var(--amber)" },

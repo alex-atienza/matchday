@@ -15,10 +15,32 @@ game together: replay it, talk about it, and celebrate the goals, with the kid f
 
 | Tab | What's there |
 |---|---|
-| **Home** | A "Matchday" feed — pinned next match, goal replays, family reactions, cards minted, photos, milestones |
-| **Replays** | The latest match + the season list → a **Match Hub** → an immersive **replay player** |
-| **Cards** | A season shelf of collectible **Matchday Cards** → a card detail with stats, speed zones & goal breakdown |
-| **Family** | The family circle + a shared feed → a **moment thread** with photos and comments |
+| **Home** | A cinematic hero (the weekend's story) flowing into a "Matchday" feed — pinned next match, goal replays, family reactions, cards minted, photos, milestones |
+| **Replays** | The latest match + the season list → a **Match Hub** (Highlights · Squad · Stats) → an immersive **replay player**, plus per-player profiles |
+| **Maya** | The tab for the star player you follow — a locker hero, her weekly digest, and three sections: **Season** (form, totals, badges) · **Cards** (the collectible shelf) · **Keepsake** (season film, best moments, order the book) |
+| **Family** | The family circle + a shared feed — RSVP, a composer, reactions → a **moment thread** and **Manage Circle** |
+
+**Why the player gets its own tab:** it blends four ideas that were separate workflows in the Paper
+file — *Maya's Locker* (profile & stats), *Maya's Week* (weekly recap), *Season Keepsake* (film, best
+moments, print) and *The Collectible* (Matchday Cards). Keeping it distinct from **Family** matters:
+Family is about **the people** around her (the circle, who's coming, shared photos and comments),
+while this tab is about **the player** you're following. Mixing them made both feel muddy.
+
+**The tab is named after the player — and that scales.** Nothing about "Maya" is hardcoded:
+
+- The route key is generic (`TabKey = … | "player" | …`); only the *label* is personal.
+- `followedIds` in [`src/squad.ts`](src/squad.ts) drives everything. `playerTabLabel()` returns the
+  followed player's first name, or **"Players"** when a family follows more than one kid.
+- Long names are handled: labels truncate past 9 characters (`shortName()`), and the hero headline
+  drops from 58px to 44px for longer names so it never overflows.
+- Following two players adds a **switcher** (jersey-number chips) above the content; the hero, form
+  guide and season totals are already per-player, and week/cards/keepsake are keyed by player id
+  (`weekByPlayer`, `cardsByPlayer`, `keepsakeByPlayer`) with honest **empty states** for players who
+  don't have that content yet — never borrowing another player's.
+
+Verified by temporarily following a second player named "Alexandra": the tab relabelled to
+*Players*, the switcher appeared, her own stats and form rendered, and Cards showed
+*"No cards yet for Alexandra."*
 
 ## Highlights
 

@@ -1,94 +1,53 @@
 import { motion } from "framer-motion";
 import { useNav } from "../nav";
 import Icon from "../components/Icon";
-import CountUp from "../components/CountUp";
 import { listContainer, tilePop, fadeUp } from "../motion";
 import { cards, img, seasonStats, TIER_META, type MatchCard, type ShelfCard } from "../data";
 import { TIER_STYLE } from "../cardStyles";
 
-export default function Cards() {
+export default function CardShelf() {
   const nav = useNav();
   const pct = Math.round((seasonStats.minted / seasonStats.total) * 100);
 
-  const stats = [
-    { label: "Goals", value: seasonStats.goals, dec: 0, hot: false },
-    { label: "Assists", value: seasonStats.assists, dec: 0, hot: false },
-    { label: "Top km/h", value: seasonStats.topKmh, dec: 1, hot: true },
-    { label: "Badges", value: seasonStats.badges, dec: 0, hot: false },
-  ];
-
   return (
-    <div className="screen">
-      <div className="app-header">
-        <div>
-          <div className="kicker">Spring 2026</div>
-          <h1>Season Shelf</h1>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div className="display" style={{ fontSize: 20, color: "var(--amber)", lineHeight: 1 }}>
-            <CountUp to={seasonStats.minted} duration={0.8} />
-            <span style={{ color: "var(--faint)" }}>/{seasonStats.total}</span>
-          </div>
-          <div className="eyebrow" style={{ fontSize: 9, marginTop: 2 }}>Collected</div>
-        </div>
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+        <span className="eyebrow">Her collection</span>
+        <span className="mono" style={{ fontSize: 11.5, color: "var(--mist)" }}>
+          {seasonStats.minted} of {seasonStats.total}
+        </span>
+      </div>
+      <div style={{ height: 4, borderRadius: 2, background: "var(--line)", overflow: "hidden", marginBottom: 16 }}>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          style={{ height: "100%", background: "linear-gradient(90deg,var(--amber),var(--heat))" }}
+        />
       </div>
 
-      <div className="scroll">
-        <div className="pad" style={{ paddingBottom: 24 }}>
-          {/* collection progress */}
-          <div style={{ height: 4, borderRadius: 2, background: "var(--line)", overflow: "hidden", marginBottom: 16 }}>
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${pct}%` }}
-              transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              style={{ height: "100%", background: "linear-gradient(90deg,var(--amber),var(--heat))" }}
-            />
-          </div>
+      <motion.div
+        style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gridAutoRows: "128px", gap: 12 }}
+        variants={listContainer}
+        initial="hidden"
+        animate="show"
+      >
+        {cards.map((c) => (
+          <Tile key={c.id} card={c} onOpen={() => nav.push({ screen: "cardDetail", params: { id: c.id } })} />
+        ))}
+      </motion.div>
 
-          {/* season stats */}
-          <motion.div style={{ display: "flex", gap: 10 }} variants={listContainer} initial="hidden" animate="show">
-            {stats.map((s) => (
-              <motion.div
-                key={s.label}
-                variants={tilePop}
-                className="card"
-                style={{ flex: 1, textAlign: "center", padding: "10px 4px", background: s.hot ? "var(--amber)" : "var(--surface)", borderColor: s.hot ? "var(--amber)" : "var(--line)" }}
-              >
-                <div className="display" style={{ fontSize: 22, color: s.hot ? "var(--bg)" : "var(--ink)", lineHeight: 1 }}>
-                  <CountUp to={s.value} decimals={s.dec} duration={1} delay={0.15} />
-                </div>
-                <div className="eyebrow" style={{ fontSize: 9, marginTop: 2, color: s.hot ? "rgba(12,14,16,0.7)" : "var(--mist)" }}>
-                  {s.label}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* the shelf */}
-          <motion.div
-            style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gridAutoRows: "128px", gap: 12, marginTop: 18 }}
-            variants={listContainer}
-            initial="hidden"
-            animate="show"
-          >
-            {cards.map((c) => (
-              <Tile key={c.id} card={c} onOpen={() => nav.push({ screen: "cardDetail", params: { id: c.id } })} />
-            ))}
-          </motion.div>
-
-          <motion.button
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            whileTap={{ scale: 0.97 }}
-            className="btn btn-primary"
-            style={{ width: "100%", marginTop: 20 }}
-          >
-            <Icon name="cards" size={17} color="var(--bg)" />
-            Print the season book
-          </motion.button>
-        </div>
-      </div>
+      <motion.button
+        variants={fadeUp}
+        initial="hidden"
+        animate="show"
+        whileTap={{ scale: 0.97 }}
+        className="btn btn-secondary"
+        style={{ width: "100%", marginTop: 16 }}
+      >
+        <Icon name="cards" size={16} color="var(--mist)" />
+        How cards are earned
+      </motion.button>
     </div>
   );
 }
@@ -128,7 +87,7 @@ function Tile({ card, onOpen }: { card: ShelfCard; onOpen: () => void }) {
     <span
       style={{
         fontFamily: "var(--font-ui)", fontSize: 8, fontWeight: 800, letterSpacing: "0.14em",
-        textTransform: "uppercase", color: t.light ? t.accent : t.accent,
+        textTransform: "uppercase", color: t.accent,
         border: `1px solid ${t.light ? "rgba(12,14,16,0.35)" : t.accent}`,
         borderRadius: 5, padding: "3px 6px", opacity: 0.95,
       }}
@@ -137,7 +96,6 @@ function Tile({ card, onOpen }: { card: ShelfCard; onOpen: () => void }) {
     </span>
   );
 
-  /* ---------- hero (legendary) ---------- */
   if (hero) {
     return (
       <motion.button variants={tilePop} whileTap={{ scale: 0.97 }} onClick={onOpen} style={{ ...base, padding: 16, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
@@ -165,7 +123,6 @@ function Tile({ card, onOpen }: { card: ShelfCard; onOpen: () => void }) {
     );
   }
 
-  /* ---------- wide (record breaker) ---------- */
   if (wide) {
     const big = c.stats.find((s) => s.label === "Distance")?.value ?? c.rating.toFixed(1);
     return (
@@ -186,7 +143,6 @@ function Tile({ card, onOpen }: { card: ShelfCard; onOpen: () => void }) {
     );
   }
 
-  /* ---------- standard 1×1 ---------- */
   return (
     <motion.button variants={tilePop} whileTap={{ scale: 0.95 }} onClick={onOpen} style={{ ...base, padding: 11, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
       {t.foil && <span className="foil" />}
