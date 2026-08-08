@@ -393,6 +393,51 @@ export const TIER_META: Record<CardTier, { rarity: string; note: string }> = {
   standard: { rarity: "Common", note: "Season card" },
 };
 
+/* ---------- SCHEDULE ---------- */
+
+export type Fixture = {
+  id: string;
+  opponent: string;
+  date: string;
+  time: string;
+  home: boolean;
+  venue: string;
+  days: number;
+  coming?: number;
+};
+
+export const fixtures: Fixture[] = [
+  { id: "m10", opponent: "Hawks", date: "Sat, May 25", time: "9:00", home: true, venue: "Riverside Park", days: 2, coming: 5 },
+  { id: "m11", opponent: "Falcons FC", date: "Sat, Jun 1", time: "11:00", home: false, venue: "Eastfield Rec", days: 9 },
+  { id: "m12", opponent: "Comets", date: "Sat, Jun 8", time: "9:30", home: true, venue: "Riverside Park", days: 16 },
+];
+
+export type TableRow = {
+  pos: number;
+  team: string;
+  p: number;
+  w: number;
+  d: number;
+  l: number;
+  gd: number;
+  pts: number;
+  us?: boolean;
+};
+
+/* Ravens' line is derived from the nine played matches: 6W 2D 1L, +9, 20 pts. */
+export const leagueTable: TableRow[] = [
+  { pos: 1, team: "Athletic", p: 9, w: 7, d: 1, l: 1, gd: 14, pts: 22 },
+  { pos: 2, team: "Ravens", p: 9, w: 6, d: 2, l: 1, gd: 9, pts: 20, us: true },
+  { pos: 3, team: "Falcons FC", p: 9, w: 6, d: 1, l: 2, gd: 7, pts: 19 },
+  { pos: 4, team: "Comets", p: 9, w: 5, d: 1, l: 3, gd: 4, pts: 16 },
+  { pos: 5, team: "Rangers", p: 9, w: 3, d: 3, l: 3, gd: 0, pts: 12 },
+  { pos: 6, team: "Kestrels", p: 9, w: 3, d: 2, l: 4, gd: -2, pts: 11 },
+  { pos: 7, team: "United", p: 9, w: 2, d: 2, l: 5, gd: -6, pts: 8 },
+  { pos: 8, team: "Rovers", p: 9, w: 2, d: 1, l: 6, gd: -8, pts: 7 },
+  { pos: 9, team: "Wanderers", p: 9, w: 1, d: 3, l: 5, gd: -9, pts: 6 },
+  { pos: 10, team: "Harriers", p: 9, w: 1, d: 2, l: 6, gd: -9, pts: 5 },
+];
+
 /* ---------- HER TAB: week digest, badges, keepsake ---------- */
 
 export const week = {

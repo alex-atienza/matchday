@@ -9,6 +9,7 @@ const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: "home", label: "Home", icon: "home" },
   { key: "replays", label: "Replays", icon: "replays" },
   { key: "player", label: playerTabLabel(), icon: "star" },
+  { key: "schedule", label: "Schedule", icon: "calendar" },
   { key: "family", label: "Family", icon: "family" },
 ];
 

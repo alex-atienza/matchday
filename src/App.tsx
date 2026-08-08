@@ -5,6 +5,7 @@ import TabBar from "./components/TabBar";
 import Home from "./tabs/Home";
 import Replays from "./tabs/Replays";
 import Player from "./tabs/Player";
+import Schedule from "./tabs/Schedule";
 import Family from "./tabs/Family";
 import MatchHub from "./screens/MatchHub";
 import ReplayPlayer from "./screens/ReplayPlayer";
@@ -20,7 +21,17 @@ type Dir = "push" | "pop" | "tab";
 
 function render(route: Route | undefined, tab: TabKey) {
   if (!route) {
-    return tab === "home" ? <Home /> : tab === "replays" ? <Replays /> : tab === "player" ? <Player /> : <Family />;
+    return tab === "home" ? (
+      <Home />
+    ) : tab === "replays" ? (
+      <Replays />
+    ) : tab === "player" ? (
+      <Player />
+    ) : tab === "schedule" ? (
+      <Schedule />
+    ) : (
+      <Family />
+    );
   }
   const p = route.params;
   switch (route.screen) {

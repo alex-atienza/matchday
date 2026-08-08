@@ -18,7 +18,8 @@ game together: replay it, talk about it, and celebrate the goals, with the kid f
 | **Home** | A cinematic hero (the weekend's story) flowing into a "Matchday" feed — pinned next match, goal replays, family reactions, cards minted, photos, milestones |
 | **Replays** | The latest match + the season list → a **Match Hub** (Highlights · Squad · Stats) → an immersive **replay player**, plus per-player profiles |
 | **Maya** | The tab for the star player you follow — a locker hero, her weekly digest, and three sections: **Season** (form, totals, badges) · **Cards** (the collectible shelf) · **Keepsake** (season film, best moments, order the book) |
-| **Family** | The family circle + a shared feed — RSVP, a composer, reactions → a **moment thread** and **Manage Circle** |
+| **Schedule** | The next match (countdown, venue, kit, weather, RSVP), the fixtures still to play, every result, and the **league table** |
+| **Family** | The family circle + a shared feed — a composer, reactions → a **moment thread** and **Manage Circle** |
 
 **Why the player gets its own tab:** it blends four ideas that were separate workflows in the Paper
 file — *Maya's Locker* (profile & stats), *Maya's Week* (weekly recap), *Season Keepsake* (film, best

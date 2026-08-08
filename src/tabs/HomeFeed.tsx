@@ -16,7 +16,7 @@ export default function HomeFeed() {
         variants={listItem}
         whileTap={{ scale: 0.98 }}
         className="card"
-        onClick={() => nav.goTab("replays")}
+        onClick={() => nav.goTab("schedule")}
         style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", textAlign: "left" }}
       >
         <div style={{ textAlign: "center", flexShrink: 0 }}>
