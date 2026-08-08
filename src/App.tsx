@@ -11,6 +11,7 @@ import ReplayPlayer from "./screens/ReplayPlayer";
 import CardDetail from "./screens/CardDetail";
 import MomentThread from "./screens/MomentThread";
 import ManageCircle from "./screens/ManageCircle";
+import PlayerProfile from "./screens/PlayerProfile";
 
 const IMMERSIVE = new Set(["replay"]);
 const EASE = [0.32, 0.72, 0, 1] as const;
@@ -33,6 +34,8 @@ function render(route: Route | undefined, tab: TabKey) {
       return <MomentThread params={p} />;
     case "manageCircle":
       return <ManageCircle params={p} />;
+    case "player":
+      return <PlayerProfile params={p} />;
     default:
       return null;
   }

@@ -75,7 +75,7 @@ export default function HomeHero() {
         <motion.button
           {...rise(0.34)}
           whileTap={{ scale: 0.97 }}
-          onClick={() => nav.push({ screen: "replay", params: { id: last.id } })}
+          onClick={() => nav.push({ screen: "replay", params: { id: last.id, min: 58 } })}
           className="btn btn-primary"
           style={{ marginTop: 16 }}
         >

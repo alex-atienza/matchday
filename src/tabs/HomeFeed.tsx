@@ -59,7 +59,7 @@ function FeedRow({ item }: { item: FeedItem }) {
           </div>
           <span className="chip" style={{ padding: "5px 10px", fontSize: 10, letterSpacing: "0.08em" }}>REPLAY</span>
         </div>
-        <motion.button whileTap={{ scale: 0.98 }} onClick={() => nav.push({ screen: "replay", params: { id: "m9" } })} style={{ display: "block", width: "100%", padding: "0 14px" }}>
+        <motion.button whileTap={{ scale: 0.98 }} onClick={() => nav.push({ screen: "replay", params: { id: "m9", min: 58 } })} style={{ display: "block", width: "100%", padding: "0 14px" }}>
           <Pitch radius={12} style={{ height: 150 }}>
             <GoalTrail w={326} h={150} a={[40, 120]} b={[165, 80]} c={[290, 60]} />
             <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>

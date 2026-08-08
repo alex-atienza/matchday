@@ -15,7 +15,7 @@ export default function Replays() {
 
   return (
     <div className="screen">
-      <AppHeader kicker="Spring 2026 · 7 played" title="Replays" />
+      <AppHeader kicker={`Spring 2026 · ${matches.length} played`} title="Replays" />
       <div className="scroll">
         <div className="pad" style={{ paddingBottom: 20 }}>
           {/* featured latest */}

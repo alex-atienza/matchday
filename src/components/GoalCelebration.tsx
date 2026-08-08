@@ -37,19 +37,24 @@ function makeParticles(n: number): Particle[] {
 }
 
 export default function GoalCelebration({
-  score,
-  scorer = "Maya · #9 · 58'",
+  headline,
+  line2,
+  sub,
+  accent = "var(--amber)",
+  confetti = true,
   originX = "50%",
   originY = "30%",
 }: {
-  score: string;
-  scorer?: string;
+  headline: string;
+  line2?: string;
+  sub?: string;
+  accent?: string;
+  confetti?: boolean;
   originX?: string;
   originY?: string;
 }) {
   const reduce = useReducedMotion();
-  const parts = useMemo(() => makeParticles(reduce ? 0 : 58), [reduce]);
-  const [home, away] = score.split("–");
+  const parts = useMemo(() => makeParticles(reduce || !confetti ? 0 : 58), [reduce, confetti]);
 
   return (
     <motion.div
@@ -59,7 +64,6 @@ export default function GoalCelebration({
       transition={{ duration: 0.25 }}
       style={{ position: "absolute", inset: 0, zIndex: 40, pointerEvents: "none", overflow: "hidden" }}
     >
-      {/* scrim */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(120% 90% at 50% 34%, rgba(5,7,10,0.35), rgba(5,7,10,0.72))" }} />
 
       {/* shockwave rings */}
@@ -70,11 +74,10 @@ export default function GoalCelebration({
             initial={{ scale: 0.2, opacity: 0.55 }}
             animate={{ scale: 6.5, opacity: 0 }}
             transition={{ duration: 1.1, ease: "easeOut", delay: i * 0.18 }}
-            style={{ position: "absolute", left: originX, top: originY, width: 64, height: 64, marginLeft: -32, marginTop: -32, borderRadius: "50%", border: "2px solid var(--amber)" }}
+            style={{ position: "absolute", left: originX, top: originY, width: 64, height: 64, marginLeft: -32, marginTop: -32, borderRadius: "50%", border: `2px solid ${accent}` }}
           />
         ))}
 
-      {/* confetti */}
       {parts.map((p) => (
         <motion.span
           key={p.id}
@@ -85,35 +88,38 @@ export default function GoalCelebration({
         />
       ))}
 
-      {/* flourish */}
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, padding: 24, textAlign: "center" }}>
         <motion.div
           initial={{ scale: reduce ? 1 : 0.5, opacity: 0, rotate: reduce ? 0 : -6 }}
           animate={{ scale: 1, opacity: 1, rotate: -3 }}
           transition={{ type: "spring", stiffness: 460, damping: 15, delay: 0.05 }}
           className="display"
-          style={{ fontSize: 68, lineHeight: 0.9, color: "var(--amber)", textShadow: "0 0 26px rgba(255,184,0,0.55)" }}
+          style={{ fontSize: headline.length > 9 ? 46 : 66, lineHeight: 0.9, color: accent, textShadow: `0 0 26px ${accent}66` }}
         >
-          GOAL!
+          {headline}
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: reduce ? 0 : 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="display"
-          style={{ fontSize: 34, lineHeight: 1, color: "var(--ink)" }}
-        >
-          RAVENS <span style={{ color: "var(--amber)" }}>{home}</span>–{away} FALCONS
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: reduce ? 0 : 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.36, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="eyebrow"
-          style={{ color: "var(--body)", fontSize: 12, letterSpacing: "0.16em" }}
-        >
-          {scorer}
-        </motion.div>
+        {line2 && (
+          <motion.div
+            initial={{ opacity: 0, y: reduce ? 0 : 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="display"
+            style={{ fontSize: 32, lineHeight: 1, color: "var(--ink)" }}
+          >
+            {line2}
+          </motion.div>
+        )}
+        {sub && (
+          <motion.div
+            initial={{ opacity: 0, y: reduce ? 0 : 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.36, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="eyebrow"
+            style={{ color: "var(--body)", fontSize: 12, letterSpacing: "0.16em" }}
+          >
+            {sub}
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );

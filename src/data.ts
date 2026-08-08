@@ -77,10 +77,24 @@ export const homeFeed: FeedItem[] = [
 /* ---------- REPLAYS ---------- */
 export type Moment = {
   min: number;
-  kind: "our" | "their" | "sprint";
+  kind: "our" | "their" | "sprint" | "save";
   title: string;
   sub: string;
+  /** choreography id from plays.ts */
+  play?: string;
+  /** who it belongs to, for the player pages */
+  who?: string;
 };
+
+export type TeamStats = {
+  poss: [number, number];
+  shots: [number, number];
+  onTarget: [number, number];
+  corners: [number, number];
+  fouls: [number, number];
+};
+
+export type Scorer = { id: string; g?: number; a?: number };
 
 export type Match = {
   id: string;
@@ -94,6 +108,8 @@ export type Match = {
   topKmh: number;
   photos: number;
   moments: Moment[];
+  scorers: Scorer[];
+  teamStats: TeamStats;
 };
 
 export const matches: Match[] = [
@@ -108,46 +124,116 @@ export const matches: Match[] = [
     assists: 0,
     topKmh: 23.4,
     photos: 6,
+    scorers: [{ id: "maya", g: 2 }, { id: "jess", g: 1, a: 1 }, { id: "priya", a: 1 }],
+    teamStats: { poss: [54, 46], shots: [14, 9], onTarget: [7, 5], corners: [6, 3], fouls: [8, 11] },
     moments: [
-      { min: 12, kind: "our", title: "GOAL · Maya finishes the cutback", sub: "Assist Jess · 2 photos · 6 replies" },
-      { min: 30, kind: "our", title: "GOAL · Jess doubles it", sub: "Header from the corner · 1 photo" },
-      { min: 34, kind: "their", title: "GOAL · Falcons pull one back", sub: "Counter-attack" },
-      { min: 41, kind: "sprint", title: "SPRINT · 23.4 km/h — season best", sub: "40m recovery run · 1 reply" },
-      { min: 58, kind: "our", title: "GOAL · Maya makes it three", sub: "Left foot, near post · 4 photos" },
-      { min: 70, kind: "their", title: "GOAL · Falcons late reply", sub: "Set piece" },
+      { min: 12, kind: "our", who: "maya", play: "cutback", title: "GOAL · Maya finishes the cutback", sub: "Assist Jess · 2 photos · 6 replies" },
+      { min: 30, kind: "our", who: "jess", play: "header", title: "GOAL · Jess doubles it", sub: "Header from the corner · 1 photo" },
+      { min: 34, kind: "their", play: "conceded", title: "GOAL · Falcons pull one back", sub: "Counter-attack" },
+      { min: 41, kind: "sprint", who: "maya", play: "sprintRecovery", title: "SPRINT · 23.4 km/h — season best", sub: "40m recovery run · 1 reply" },
+      { min: 58, kind: "our", who: "maya", play: "nearPost", title: "GOAL · Maya makes it three", sub: "Left foot, near post · 4 photos" },
+      { min: 70, kind: "their", play: "penalty", title: "GOAL · Falcons late reply", sub: "Set piece" },
     ],
   },
   {
     id: "m8", opponent: "Rangers", date: "Sat, May 11", result: "D", score: "1–1", home: false,
     goals: 0, assists: 1, topKmh: 22.1, photos: 2,
+    scorers: [{ id: "priya", g: 1 }, { id: "maya", a: 1 }],
+    teamStats: { poss: [48, 52], shots: [9, 12], onTarget: [4, 5], corners: [4, 6], fouls: [10, 9] },
     moments: [
-      { min: 22, kind: "our", title: "GOAL · Priya taps in Maya's cross", sub: "Assist Maya" },
-      { min: 63, kind: "their", title: "GOAL · Rangers equalize", sub: "Penalty" },
+      { min: 22, kind: "our", who: "maya", play: "assistCross", title: "GOAL · Priya taps in Maya's cross", sub: "Assist Maya · 1 photo" },
+      { min: 38, kind: "sprint", who: "maya", play: "sprintRight", title: "SPRINT · 22.1 km/h", sub: "Chasing down the long ball" },
+      { min: 63, kind: "their", play: "penalty", title: "GOAL · Rangers equalise", sub: "Penalty" },
+      { min: 80, kind: "save", who: "ivy", play: "save", title: "SAVE · Ivy keeps the point", sub: "Low to her right · 2 replies" },
     ],
   },
   {
     id: "m7", opponent: "Comets", date: "Sat, May 4", result: "W", score: "2–0", home: true,
     goals: 1, assists: 0, topKmh: 22.8, photos: 4,
+    scorers: [{ id: "maya", g: 1 }, { id: "sofia", g: 1 }, { id: "tess", a: 1 }],
+    teamStats: { poss: [58, 42], shots: [16, 6], onTarget: [8, 2], corners: [8, 2], fouls: [6, 8] },
     moments: [
-      { min: 18, kind: "our", title: "GOAL · Maya, low drive", sub: "Top corner" },
-      { min: 55, kind: "our", title: "GOAL · Team move, Sofia finishes", sub: "9-pass build-up" },
+      { min: 18, kind: "our", who: "maya", play: "lowDrive", title: "GOAL · Maya, low drive", sub: "Top corner from 20 yards · 2 photos" },
+      { min: 33, kind: "save", who: "ivy", play: "saveHigh", title: "SAVE · Tipped over the bar", sub: "Ivy's best of the season" },
+      { min: 55, kind: "our", who: "sofia", play: "teamMove", title: "GOAL · Sofia finishes the move", sub: "Nine passes, one touch · 1 photo" },
+      { min: 68, kind: "sprint", who: "maya", play: "sprintRight", title: "SPRINT · 22.8 km/h", sub: "Breakaway down the right" },
     ],
   },
   {
     id: "m6", opponent: "United", date: "Sat, Apr 27", result: "W", score: "1–0", home: false,
-    goals: 0, assists: 1, topKmh: 21.9, photos: 1, moments: [],
+    goals: 0, assists: 1, topKmh: 21.9, photos: 1,
+    scorers: [{ id: "jess", g: 1 }, { id: "maya", a: 1 }],
+    teamStats: { poss: [44, 56], shots: [8, 13], onTarget: [3, 4], corners: [3, 7], fouls: [12, 10] },
+    moments: [
+      { min: 29, kind: "sprint", who: "maya", play: "sprintLeft", title: "SPRINT · 21.9 km/h", sub: "First of 24 sprints" },
+      { min: 44, kind: "save", who: "ivy", play: "save", title: "SAVE · Ivy denies the header", sub: "Corner cleared" },
+      { min: 71, kind: "our", who: "maya", play: "assistSquare", title: "GOAL · Jess wins it late", sub: "Assist Maya — the lung-buster · 1 photo" },
+      { min: 88, kind: "save", who: "ivy", play: "saveHigh", title: "SAVE · One last stop", sub: "Held on for the clean sheet" },
+    ],
   },
   {
     id: "m5", opponent: "Kestrels", date: "Sat, Apr 20", result: "L", score: "2–3", home: true,
-    goals: 1, assists: 1, topKmh: 23.0, photos: 3, moments: [],
+    goals: 1, assists: 1, topKmh: 23.0, photos: 3,
+    scorers: [{ id: "maya", g: 1, a: 1 }, { id: "rosa", g: 1 }],
+    teamStats: { poss: [51, 49], shots: [12, 11], onTarget: [5, 6], corners: [5, 4], fouls: [9, 13] },
+    moments: [
+      { min: 11, kind: "their", play: "conceded", title: "GOAL · Kestrels strike first", sub: "Counter-attack" },
+      { min: 26, kind: "our", who: "maya", play: "nearPost", title: "GOAL · Maya levels it", sub: "Left foot, near post · 1 photo" },
+      { min: 40, kind: "our", who: "maya", play: "assistCross", title: "GOAL · Rosa heads it in", sub: "Assist Maya · 1 photo" },
+      { min: 58, kind: "their", play: "penalty", title: "GOAL · Kestrels ahead again", sub: "Set piece" },
+      { min: 77, kind: "their", play: "conceded", title: "GOAL · The winner", sub: "Deflected off the post" },
+    ],
   },
   {
     id: "m4", opponent: "Athletic", date: "Sat, Apr 13", result: "W", score: "4–1", home: false,
-    goals: 2, assists: 1, topKmh: 22.5, photos: 5, moments: [],
+    goals: 2, assists: 1, topKmh: 22.5, photos: 5,
+    scorers: [{ id: "maya", g: 2, a: 1 }, { id: "jess", g: 1 }, { id: "sofia", g: 1 }],
+    teamStats: { poss: [61, 39], shots: [18, 7], onTarget: [10, 3], corners: [9, 2], fouls: [5, 7] },
+    moments: [
+      { min: 9, kind: "our", who: "maya", play: "toePoke", title: "GOAL · Maya opens it early", sub: "First touch of the game · 2 photos" },
+      { min: 24, kind: "our", who: "maya", play: "assistSquare", title: "GOAL · Jess doubles the lead", sub: "Assist Maya" },
+      { min: 38, kind: "their", play: "conceded", title: "GOAL · Athletic pull one back", sub: "Free kick" },
+      { min: 52, kind: "sprint", who: "maya", play: "sprintLeft", title: "SPRINT · 22.5 km/h", sub: "Down the left touchline" },
+      { min: 66, kind: "our", who: "maya", play: "solo", title: "GOAL · Maya's solo run", sub: "Past two, finished low · 3 photos" },
+      { min: 81, kind: "our", who: "sofia", play: "teamMove", title: "GOAL · Sofia caps it", sub: "Nine-pass team move" },
+    ],
   },
   {
     id: "m3", opponent: "Rovers", date: "Sat, Apr 6", result: "W", score: "3–1", home: true,
-    goals: 1, assists: 0, topKmh: 21.7, photos: 2, moments: [],
+    goals: 1, assists: 0, topKmh: 21.7, photos: 2,
+    scorers: [{ id: "maya", g: 1 }, { id: "priya", g: 1, a: 1 }, { id: "jess", g: 1 }],
+    teamStats: { poss: [56, 44], shots: [15, 8], onTarget: [7, 3], corners: [7, 4], fouls: [7, 9] },
+    moments: [
+      { min: 27, kind: "our", who: "maya", play: "toePoke", title: "GOAL · Maya toe-pokes it in", sub: "Quickest reaction in the box" },
+      { min: 41, kind: "their", play: "conceded", title: "GOAL · Rovers respond", sub: "Long range" },
+      { min: 55, kind: "our", who: "priya", play: "freeKick", title: "GOAL · Priya's free kick", sub: "Straight over the wall · 1 photo" },
+      { min: 62, kind: "sprint", who: "maya", play: "sprintRecovery", title: "SPRINT · 21.7 km/h", sub: "Recovery run to halfway" },
+      { min: 74, kind: "our", who: "jess", play: "teamMove", title: "GOAL · Jess seals it", sub: "Assist Priya" },
+    ],
+  },
+  {
+    id: "m2", opponent: "Wanderers", date: "Sat, Mar 30", result: "D", score: "0–0", home: false,
+    goals: 0, assists: 0, topKmh: 21.2, photos: 2,
+    scorers: [],
+    teamStats: { poss: [47, 53], shots: [7, 9], onTarget: [2, 3], corners: [3, 5], fouls: [11, 12] },
+    moments: [
+      { min: 20, kind: "save", who: "ivy", play: "save", title: "SAVE · Ivy's double stop", sub: "Two in two seconds" },
+      { min: 45, kind: "sprint", who: "maya", play: "sprintRecovery", title: "SPRINT · 21.2 km/h", sub: "Last-ditch tracking back" },
+      { min: 62, kind: "save", who: "maya", play: "lowDrive", title: "SAVE · Maya denied", sub: "Their keeper tips it wide · 1 photo" },
+      { min: 78, kind: "save", who: "maya", play: "saveHigh", title: "SAVE · Goal-line block", sub: "Maya hooks it off the line · 4 replies" },
+    ],
+  },
+  {
+    id: "m1", opponent: "Harriers", date: "Sat, Mar 23", result: "W", score: "2–1", home: true,
+    goals: 0, assists: 1, topKmh: 20.8, photos: 3,
+    scorers: [{ id: "rosa", g: 1 }, { id: "jess", g: 1 }, { id: "maya", a: 1 }],
+    teamStats: { poss: [50, 50], shots: [10, 10], onTarget: [4, 4], corners: [5, 5], fouls: [8, 8] },
+    moments: [
+      { min: 15, kind: "their", play: "conceded", title: "GOAL · Harriers take the lead", sub: "An early setback" },
+      { min: 34, kind: "our", who: "rosa", play: "header", title: "GOAL · Rosa equalises", sub: "Scramble from a corner · 1 photo" },
+      { min: 62, kind: "our", who: "maya", play: "assistSquare", title: "GOAL · Jess wins it", sub: "Assist Maya — her first ever · 2 photos" },
+      { min: 70, kind: "sprint", who: "maya", play: "sprintLeft", title: "SPRINT · 20.8 km/h", sub: "Her first tracked sprint" },
+    ],
   },
 ];
 
