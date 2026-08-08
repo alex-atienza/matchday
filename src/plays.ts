@@ -171,6 +171,27 @@ export const PLAYS: Record<string, Play> = {
   },
 };
 
+/* Extra bodies so "All 22 players" really shows 22.
+   Ours: Maya + 4 from the play + these 6 = 11. Theirs: 4 + these 7 = 11. */
+export const FILL_OURS: Pt[] = [
+  [50, 142], // keeper
+  [20, 126],
+  [80, 126],
+  [34, 108],
+  [66, 108],
+  [50, 96],
+];
+
+export const FILL_THEIRS: Pt[] = [
+  [50, 9], // their keeper
+  [22, 20],
+  [78, 20],
+  [36, 34],
+  [64, 34],
+  [30, 52],
+  [70, 52],
+];
+
 const FALLBACK: Record<string, string> = {
   our: "lowDrive",
   their: "conceded",
