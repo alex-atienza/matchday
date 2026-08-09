@@ -222,9 +222,9 @@ function FeedRow({ item }: { item: FeedItem }) {
     );
   }
 
-  /* ---------- the quiet beat: someone reacted ---------- */
+  /* ---------- the quiet beat: someone reacted — contained, just lighter ---------- */
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "4px 6px" }}>
+    <div className="card" style={{ display: "flex", alignItems: "center", gap: 11, padding: "11px 13px" }}>
       <div style={{ width: 28, height: 28, borderRadius: 14, background: item.color, color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 12, flexShrink: 0 }}>
         {item.initial}
       </div>
