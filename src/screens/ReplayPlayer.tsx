@@ -17,38 +17,74 @@ const FULL = 80; // minutes on the timeline
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
-export default function ReplayPlayer({ params }: { params: { id: string; min?: number } }) {
+/** A moment somewhere in the season. */
+export type Cue = { id: string; min: number };
+
+export type ReplayParams = {
+  id: string;
+  min?: number;
+  /** the run of moments this replay belongs to — a game, or a player's highlights */
+  queue?: Cue[];
+  queueLabel?: string;
+};
+
+export default function ReplayPlayer({ params }: { params: ReplayParams }) {
   const nav = useNav();
   const reduce = useReducedMotion();
   const cid = "rclip-" + useId().replace(/[:]/g, "");
 
-  const match = matches.find((m) => m.id === params.id) ?? matches[0];
-  const fallbackMin = (match.moments.find((m) => m.kind === "our") ?? match.moments[0])?.min ?? 58;
+  const first = matches.find((m) => m.id === params.id) ?? matches[0];
+  const [cursor, setCursor] = useState<Cue>({
+    id: first.id,
+    min: params.min ?? (first.moments.find((m) => m.kind === "our") ?? first.moments[0])?.min ?? 58,
+  });
 
-  const [activeMin, setActiveMin] = useState<number>(params.min ?? fallbackMin);
   const [runId, setRunId] = useState(0);
   const [celebrate, setCelebrate] = useState(false);
   const [ended, setEnded] = useState(false);
   const [muted, setMuted] = useState(false);
   const [followMaya, setFollowMaya] = useState(true);
 
-  /* ---------- scrubbing ---------- */
+  const match = matches.find((m) => m.id === cursor.id) ?? matches[0];
+  const moment: Moment | undefined = useMemo(
+    () => match.moments.find((m) => m.min === cursor.min) ?? match.moments[0],
+    [match, cursor.min],
+  );
+
+  /* ---------- the queue ---------- */
+  const queue: Cue[] = params.queue?.length
+    ? params.queue
+    : match.moments.map((m) => ({ id: match.id, min: m.min }));
+  const queueLabel = params.queueLabel ?? `${match.home ? "vs" : "@"} ${match.opponent}`;
+  const idx = queue.findIndex((q) => q.id === cursor.id && q.min === cursor.min);
+  const next = idx >= 0 ? queue[idx + 1] : queue[0];
+  const prev = idx > 0 ? queue[idx - 1] : undefined;
+
+  const cueInfo = (c?: Cue) => {
+    if (!c) return null;
+    const m = matches.find((x) => x.id === c.id);
+    const mo = m?.moments.find((x) => x.min === c.min);
+    return mo ? { match: m!, moment: mo } : null;
+  };
+  const nextInfo = cueInfo(next);
+
+  const go = (c: Cue) => setCursor(c);
+
+  /* ---------- scrubbing (within the current match) ---------- */
   const trackRef = useRef<HTMLDivElement>(null);
   const [scrubMin, setScrubMin] = useState<number | null>(null);
-
-  const nearestMoment = (clientX: number) => {
-    const el = trackRef.current;
-    if (!el) return activeMin;
-    const r = el.getBoundingClientRect();
-    const t = clamp((clientX - r.left) / r.width, 0, 1) * FULL;
-    return match.moments.reduce((a, b) => (Math.abs(b.min - t) < Math.abs(a.min - t) ? b : a)).min;
-  };
-
-  // mirrored in a ref so a fast tap (down+up before a re-render) still commits
   const scrubRef = useRef<number | null>(null);
   const setScrub = (v: number | null) => {
     scrubRef.current = v;
     setScrubMin(v);
+  };
+
+  const nearestMoment = (clientX: number) => {
+    const el = trackRef.current;
+    if (!el) return cursor.min;
+    const r = el.getBoundingClientRect();
+    const t = clamp((clientX - r.left) / r.width, 0, 1) * FULL;
+    return match.moments.reduce((a, b) => (Math.abs(b.min - t) < Math.abs(a.min - t) ? b : a)).min;
   };
 
   const onDown = (e: React.PointerEvent) => {
@@ -62,16 +98,12 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
   const onUp = () => {
     const v = scrubRef.current;
     if (v === null) return;
-    if (v !== activeMin) setActiveMin(v);
+    if (v !== cursor.min) setCursor({ id: match.id, min: v });
     else setRunId((r) => r + 1);
     setScrub(null);
   };
 
-  const moment: Moment | undefined = useMemo(
-    () => match.moments.find((m) => m.min === activeMin) ?? match.moments[0],
-    [match, activeMin],
-  );
-
+  /* ---------- playback ---------- */
   const play = getPlay(moment?.play, moment?.kind ?? "our");
   const ball = ballFrames(play);
   const maya = mayaFrames(play);
@@ -92,16 +124,15 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
       clearTimeout(t1);
       clearTimeout(t2);
     };
-  }, [runId, activeMin, arrival]);
+  }, [runId, cursor.id, cursor.min, arrival]);
 
-  const min = moment?.min ?? fallbackMin;
+  const min = moment?.min ?? cursor.min;
   const half = min > 40 ? "2ND HALF" : "1ST HALF";
   const scorer = moment?.who ? getPlayer(moment.who) : null;
   const pctOf = (m: number) => clamp((m / FULL) * 100, 1, 97);
   const headMin = scrubMin ?? min;
   const scrubbing = scrubMin !== null;
   const scrubMoment = scrubbing ? match.moments.find((m) => m.min === scrubMin) : null;
-  // follow the finger exactly while dragging; glide when jumping between moments
   const glide = scrubbing
     ? ({ duration: 0 } as const)
     : ({ type: "spring", stiffness: 420, damping: 36 } as const);
@@ -122,11 +153,10 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
   })();
 
   const netEnd: "top" | "bottom" | null = end ? (end[1] > 75 ? "bottom" : "top") : null;
-
-  // in "all 22" mode we pad each side out to a full eleven
   const mates = followMaya ? play.mates : [...play.mates, ...FILL_OURS];
   const foes = followMaya ? play.foes : [...play.foes, ...FILL_THEIRS];
   const outfield = squad.filter((p) => !p.isMaya);
+  const animKey = `${cursor.id}:${cursor.min}:${runId}`;
 
   return (
     <div className="screen" style={{ background: "var(--tunnel)", position: "relative" }}>
@@ -143,7 +173,9 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
           <div className="eyebrow" style={{ color: "var(--body)", fontSize: 11.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {min}' · {(moment?.title ?? "REPLAY").split(" · ")[0]}
           </div>
-          <div className="muted" style={{ fontSize: 10.5, marginTop: 1 }}>{half}</div>
+          <div className="muted" style={{ fontSize: 10.5, marginTop: 1 }}>
+            {queueLabel} · {half}
+          </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
           <AnimatePresence>{celebrate && !muted && cel.confetti && <Equalizer key="eq" />}</AnimatePresence>
@@ -156,7 +188,6 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
       {/* pitch */}
       <div style={{ flex: 1, minHeight: 0, padding: "0 16px" }}>
         <Pitch lines radius={18} style={{ height: "100%" }}>
-          {/* nets */}
           <svg viewBox="0 0 100 150" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
             {(["top", "bottom"] as const).map((side) => {
               const y = side === "top" ? 6 : 132;
@@ -183,7 +214,6 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
             })}
           </svg>
 
-          {/* our players */}
           {mates.map((p, i) => (
             <motion.span
               key={"m" + i}
@@ -195,7 +225,6 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
               {!followMaya && outfield[i % outfield.length]?.num}
             </motion.span>
           ))}
-          {/* their players */}
           {foes.map((p, i) => (
             <motion.span
               key={"f" + i}
@@ -208,8 +237,7 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
             </motion.span>
           ))}
 
-          <Fragment key={`${activeMin}:${runId}`}>
-            {/* paths */}
+          <Fragment key={animKey}>
             <svg viewBox="0 0 100 150" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
               <defs>
                 <clipPath id={cid}>
@@ -294,10 +322,10 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
         </Pitch>
       </div>
 
-      {/* clip playback — this moment only, separate from the match timeline */}
+      {/* clip playback */}
       <div style={{ height: 2, margin: "10px 16px 0", borderRadius: 1, background: "var(--line)", overflow: "hidden", flexShrink: 0 }}>
         <motion.div
-          key={`clip:${activeMin}:${runId}`}
+          key={`clip:${animKey}`}
           initial={{ width: reduce ? "100%" : "0%" }}
           animate={{ width: "100%" }}
           transition={{ duration: reduce ? 0 : dur, delay: DELAY, ease: "linear" }}
@@ -309,26 +337,14 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
       <motion.div
         initial={{ opacity: 0, y: reduce ? 0 : 16 }}
         animate={{ opacity: 1, y: 0, transition: { delay: 0.15, duration: 0.4, ease: EASE } }}
-        style={{ padding: "14px 16px calc(20px + env(safe-area-inset-bottom,8px))", flexShrink: 0, position: "relative", zIndex: 41 }}
+        style={{ padding: "14px 16px calc(18px + env(safe-area-inset-bottom,8px))", flexShrink: 0, position: "relative", zIndex: 41 }}
       >
-        <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setFollowMaya(true)}
-            aria-pressed={followMaya}
-            className={followMaya ? "btn btn-primary" : "btn btn-secondary"}
-            style={{ flex: 1, fontSize: 14, padding: "12px" }}
-          >
+        <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
+          <motion.button whileTap={{ scale: 0.97 }} onClick={() => setFollowMaya(true)} aria-pressed={followMaya} className={followMaya ? "btn btn-primary" : "btn btn-secondary"} style={{ flex: 1, fontSize: 14, padding: "11px" }}>
             <Icon name="target" size={16} color={followMaya ? "var(--bg)" : "var(--mist)"} />
             Following Maya
           </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setFollowMaya(false)}
-            aria-pressed={!followMaya}
-            className={!followMaya ? "btn btn-primary" : "btn btn-secondary"}
-            style={{ flex: 1, fontSize: 14, padding: "12px" }}
-          >
+          <motion.button whileTap={{ scale: 0.97 }} onClick={() => setFollowMaya(false)} aria-pressed={!followMaya} className={!followMaya ? "btn btn-primary" : "btn btn-secondary"} style={{ flex: 1, fontSize: 14, padding: "11px" }}>
             All 22 players
           </motion.button>
         </div>
@@ -346,7 +362,6 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
           </motion.button>
 
           <div style={{ flex: 1, position: "relative" }}>
-            {/* scrub tooltip */}
             <AnimatePresence>
               {scrubbing && scrubMoment && (
                 <motion.div
@@ -362,23 +377,9 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
               )}
             </AnimatePresence>
 
-            {/* touch target */}
-            <div
-              onPointerDown={onDown}
-              onPointerMove={onMove}
-              onPointerUp={onUp}
-              onPointerCancel={onUp}
-              style={{ padding: "12px 0", cursor: "pointer", touchAction: "none" }}
-            >
+            <div onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} style={{ padding: "12px 0", cursor: "pointer", touchAction: "none" }}>
               <div ref={trackRef} style={{ position: "relative", height: 4, borderRadius: 2, background: "var(--line)" }}>
-                {/* match progress up to the selected moment — a position, not playback */}
-                <motion.div
-                  animate={{ width: `${pctOf(headMin)}%` }}
-                  transition={glide}
-                  style={{ position: "absolute", left: 0, top: 0, bottom: 0, background: "var(--amber)", borderRadius: 2 }}
-                />
-
-                {/* key-moment markers */}
+                <motion.div animate={{ width: `${pctOf(headMin)}%` }} transition={glide} style={{ position: "absolute", left: 0, top: 0, bottom: 0, background: "var(--amber)", borderRadius: 2 }} />
                 {match.moments.map((m) => {
                   const on = m.min === headMin;
                   return (
@@ -390,8 +391,6 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
                     />
                   );
                 })}
-
-                {/* playhead — stays where you put it */}
                 <motion.span
                   animate={{ left: `${pctOf(headMin)}%`, scale: scrubbing ? 1.3 : 1 }}
                   transition={glide}
@@ -407,16 +406,56 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
           </div>
         </div>
 
-        <div className="muted" style={{ fontSize: 11, textAlign: "center", marginTop: 8 }}>
-          {scrubbing ? "Release to play this moment" : `Drag the timeline to jump between ${match.moments.length} key moments`}
+        {/* up next — always a way onward, in the context you arrived from */}
+        <div style={{ display: "flex", alignItems: "stretch", gap: 8, marginTop: 12 }}>
+          <motion.button
+            whileTap={{ scale: prev ? 0.94 : 1 }}
+            onClick={() => prev && go(prev)}
+            disabled={!prev}
+            aria-label="Previous moment"
+            style={{ width: 42, borderRadius: 12, border: "1px solid var(--line)", background: "var(--surface)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, opacity: prev ? 1 : 0.35 }}
+          >
+            <Icon name="chevronLeft" size={18} color="var(--body)" />
+          </motion.button>
+
+          {nextInfo ? (
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={() => go(next!)}
+              style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 10, borderRadius: 12, border: "1px solid var(--line)", background: "var(--surface)", padding: "9px 12px", textAlign: "left" }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="eyebrow" style={{ fontSize: 8.5, color: "var(--amber)" }}>
+                  Up next · {idx + 2} of {queue.length} · {queueLabel}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--ink)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 2 }}>
+                  {nextInfo.moment.min}' · {nextInfo.moment.title.split(" · ").slice(-1)[0]}
+                </div>
+              </div>
+              <Icon name="chevronRight" size={18} color="var(--amber)" />
+            </motion.button>
+          ) : (
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={() => go(queue[0])}
+              style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 10, borderRadius: 12, border: "1px solid var(--line)", background: "var(--surface)", padding: "9px 12px", textAlign: "left" }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="eyebrow" style={{ fontSize: 8.5, color: "var(--mist)" }}>
+                  That's all {queue.length} · {queueLabel}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--ink)", marginTop: 2 }}>Start from the beginning</div>
+              </div>
+              <Icon name="replays" size={17} color="var(--mist)" />
+            </motion.button>
+          )}
         </div>
       </motion.div>
 
-      {/* impact flash */}
       <AnimatePresence>
         {celebrate && !reduce && end && (
           <motion.div
-            key={"flash" + runId + activeMin}
+            key={"flash" + animKey}
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 0.4, 0] }}
             exit={{ opacity: 0 }}
@@ -429,7 +468,7 @@ export default function ReplayPlayer({ params }: { params: { id: string; min?: n
       <AnimatePresence>
         {celebrate && !scrubbing && (
           <GoalCelebration
-            key={`${activeMin}:${runId}`}
+            key={animKey}
             headline={cel.headline}
             line2={cel.line2}
             sub={cel.sub}

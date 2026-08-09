@@ -161,7 +161,18 @@ function Highlights({ match }: { match: Match }) {
             variants={listItem}
             whileTap={{ scale: 0.98 }}
             className="card"
-            onClick={() => nav.push({ screen: "replay", params: { id: match.id, min: m.min } })}
+            onClick={() =>
+              nav.push({
+                screen: "replay",
+                params: {
+                  id: match.id,
+                  min: m.min,
+                  // stepping through follows whatever you've filtered to
+                  queue: shown.map((x) => ({ id: match.id, min: x.min })),
+                  queueLabel: `${match.home ? "vs" : "@"} ${match.opponent}`,
+                },
+              })
+            }
             style={{ display: "flex", alignItems: "center", gap: 12, padding: 12, width: "100%", textAlign: "left" }}
           >
             <div style={{ width: 40, height: 40, borderRadius: 10, background: `color-mix(in srgb, ${MOMENT[m.kind].color} 16%, transparent)`, color: MOMENT[m.kind].color, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>

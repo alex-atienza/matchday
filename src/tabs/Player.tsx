@@ -344,7 +344,17 @@ function Keepsake({ player }: { player: P }) {
             variants={listItem}
             whileTap={{ scale: 0.98 }}
             className="card"
-            onClick={() => nav.push({ screen: "replay", params: { id: b.matchId, min: b.min } })}
+            onClick={() =>
+              nav.push({
+                screen: "replay",
+                params: {
+                  id: b.matchId,
+                  min: b.min,
+                  queue: keepsake.best.map((x) => ({ id: x.matchId, min: x.min })),
+                  queueLabel: `${player.name}'s best`,
+                },
+              })
+            }
             style={{ display: "flex", alignItems: "center", gap: 12, padding: 12, width: "100%", textAlign: "left" }}
           >
             <div className="display" style={{ width: 22, fontSize: 17, color: "var(--faint)", flexShrink: 0, textAlign: "center" }}>{i + 1}</div>

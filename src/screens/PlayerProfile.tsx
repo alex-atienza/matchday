@@ -92,7 +92,17 @@ export default function PlayerProfile({ params }: { params: { id: string; matchI
                     variants={listItem}
                     whileTap={{ scale: 0.98 }}
                     className="card"
-                    onClick={() => nav.push({ screen: "replay", params: { id: match.id, min: m.min } })}
+                    onClick={() =>
+                      nav.push({
+                        screen: "replay",
+                        params: {
+                          id: match.id,
+                          min: m.min,
+                          queue: theirMoments.map((x) => ({ id: match.id, min: x.min })),
+                          queueLabel: `${p.name}'s moments`,
+                        },
+                      })
+                    }
                     style={{ display: "flex", alignItems: "center", gap: 12, padding: 12, width: "100%", textAlign: "left" }}
                   >
                     <div style={{ width: 38, height: 38, borderRadius: 9, background: "color-mix(in srgb, var(--amber) 16%, transparent)", color: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 15 }}>
