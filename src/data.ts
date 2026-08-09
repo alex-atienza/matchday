@@ -27,52 +27,71 @@ export const nextMatch = {
 };
 
 /* ---------- HOME feed ---------- */
-export type FeedItem =
+/** `hours` drives both the ordering and the day grouping. */
+export type FeedItem = { hours: number } & (
   | { type: "goal"; min: number; title: string; sub: string; likers: string; replies: number }
-  | { type: "react"; who: string; initial: string; color: string; text: string; quote: string; ago: string }
-  | { type: "card"; title: string; sub: string }
+  | { type: "react"; who: string; initial: string; color: string; text: string; quote: string }
+  | { type: "card"; title: string; sub: string; cardId: string; rating: number }
   | { type: "photos"; who: string; title: string; sub: string; shots: number[] }
-  | { type: "milestone"; title: string; sub: string }
-  | { type: "sprint"; title: string; sub: string };
+  | { type: "milestone"; value: number; label: string; sub: string }
+  | { type: "sprint"; value: number; unit: string; label: string; sub: string }
+);
 
 export const homeFeed: FeedItem[] = [
   {
+    hours: 2,
     type: "goal",
-    min: 58,
-    title: "Maya scored · 58'",
-    sub: "vs Falcons FC · 2h ago",
+    min: 12,
+    title: "Her opener · 12'",
+    sub: "The cutback",
     likers: "Dad, Grandma +2",
     replies: 6,
   },
   {
+    hours: 5,
     type: "react",
     who: "Grandma",
     initial: "G",
     color: "var(--away)",
     text: "Grandma reacted to the 41' sprint",
     quote: "unstoppable!",
-    ago: "5h ago",
   },
-  { type: "card", title: "New Matchday Card minted", sub: "Rating 9.2 · 9 of 12 · 1d ago" },
   {
+    hours: 6,
     type: "photos",
     who: "Dad",
     title: "Dad added 4 photos",
-    sub: "Warm-up & the celebration · 6h ago",
+    sub: "Warm-up & the celebration",
     shots: [44, 45, 46, 47],
   },
-  { type: "milestone", title: "7 goals this season", sub: "A new personal best — passed last year's 6" },
-  { type: "sprint", title: "Top speed · 23.4 km/h", sub: "Season best, set in the 41' recovery run" },
   {
+    hours: 9,
+    type: "sprint",
+    value: 23.4,
+    unit: "km/h",
+    label: "Season best",
+    sub: "Set in the 41' recovery run",
+  },
+  { hours: 26, type: "card", title: "New Matchday Card minted", sub: "Match 9 · vs Falcons FC", cardId: "M9", rating: 9.2 },
+  {
+    hours: 28,
     type: "react",
     who: "Coach Rae",
     initial: "R",
     color: "var(--our)",
     text: "Coach Rae noted the 30' assist",
     quote: "great vision to find Jess",
-    ago: "1d ago",
+  },
+  {
+    hours: 30,
+    type: "milestone",
+    value: 7,
+    label: "goals this season",
+    sub: "A new personal best — she passed last year's six",
   },
 ];
+
+export const agoLabel = (h: number) => (h < 24 ? `${h}h ago` : `${Math.round(h / 24)}d ago`);
 
 /* ---------- REPLAYS ---------- */
 export type Moment = {
