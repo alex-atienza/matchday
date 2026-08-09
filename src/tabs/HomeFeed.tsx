@@ -111,7 +111,24 @@ function FeedRow({ item }: { item: FeedItem }) {
 
   if (item.type === "photos") {
     return (
-      <div className="card" style={{ display: "flex", alignItems: "center", gap: 12, padding: 12 }}>
+      <motion.button
+        whileTap={{ scale: 0.98 }}
+        className="card"
+        onClick={() =>
+          nav.push({
+            screen: "photos",
+            params: {
+              shots: item.shots,
+              index: 0,
+              initial: item.who.slice(0, 1),
+              color: "var(--our)",
+              title: item.title,
+              sub: item.sub,
+            },
+          })
+        }
+        style={{ display: "flex", alignItems: "center", gap: 12, padding: 12, width: "100%", textAlign: "left" }}
+      >
         <img src={img(120, 120, item.shots[0])} width={56} height={56} style={{ borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 700, fontSize: 14, color: "var(--ink)" }}>{item.title}</div>
@@ -122,7 +139,7 @@ function FeedRow({ item }: { item: FeedItem }) {
             <img key={s} src={img(80, 80, s)} width={30} height={30} style={{ borderRadius: 8, objectFit: "cover", border: "2px solid var(--surface)", marginLeft: i ? -10 : 0 }} />
           ))}
         </div>
-      </div>
+      </motion.button>
     );
   }
 

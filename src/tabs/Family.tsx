@@ -121,7 +121,11 @@ function PostCard({ post }: { post: FamilyPost }) {
 
   return (
     <div className="card" style={{ padding: 14 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+      <motion.button
+        whileTap={post.kind === "photos" ? { scale: 0.99 } : undefined}
+        onClick={post.kind === "photos" ? openThread : undefined}
+        style={{ display: "flex", alignItems: "center", gap: 11, width: "100%", textAlign: "left", cursor: post.kind === "photos" ? "pointer" : "default" }}
+      >
         <div style={{ width: 34, height: 34, borderRadius: post.kind === "card" ? 6 : 17, background: post.kind === "card" ? "linear-gradient(160deg,#16224d,#0E1633)" : post.color, border: post.kind === "card" ? "1px solid var(--amber)" : "none", color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: post.kind === "card" ? 11 : 14, flexShrink: 0 }}>
           {post.kind === "card" ? <span className="display" style={{ color: "var(--amber)", fontSize: 12 }}>{post.initial}</span> : post.initial}
         </div>
@@ -130,16 +134,37 @@ function PostCard({ post }: { post: FamilyPost }) {
           {post.sub && <div className="muted" style={{ fontSize: 12.5 }}>{post.sub}</div>}
         </div>
         <span className="muted" style={{ fontSize: 11.5, flexShrink: 0 }}>{post.ago}</span>
-      </div>
+      </motion.button>
 
       {post.body && <div style={{ fontSize: 14, color: "var(--body)", lineHeight: 1.45, marginTop: 8 }}>{post.body}</div>}
 
       {post.kind === "photos" && post.photos && (
-        <button className="press" onClick={openThread} style={{ display: "flex", gap: 5, marginTop: 10, width: "100%" }}>
-          {post.photos.map((s) => (
-            <img key={s} src={img(240, 200, s)} style={{ flex: 1, height: 118, objectFit: "cover", borderRadius: 10, minWidth: 0 }} />
+        <div style={{ display: "flex", gap: 5, marginTop: 10, width: "100%" }}>
+          {post.photos.map((s, n) => (
+            <motion.button
+              key={s}
+              whileTap={{ scale: 0.97 }}
+              onClick={() =>
+                nav.push({
+                  screen: "photos",
+                  params: {
+                    shots: post.photos,
+                    index: n,
+                    who: post.who,
+                    initial: post.initial,
+                    color: post.color,
+                    title: post.title,
+                    sub: `${post.sub ?? ""} · ${post.ago} ago`,
+                  },
+                })
+              }
+              aria-label={`Open photo ${n + 1} of ${post.photos!.length}`}
+              style={{ flex: 1, minWidth: 0, borderRadius: 10, overflow: "hidden", lineHeight: 0 }}
+            >
+              <img src={img(240, 200, s)} alt="" style={{ width: "100%", height: 118, objectFit: "cover", display: "block" }} />
+            </motion.button>
           ))}
-        </button>
+        </div>
       )}
 
       {post.kind === "clip" && (

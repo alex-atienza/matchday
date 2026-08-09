@@ -59,8 +59,29 @@ export default function MomentThread(_: { params?: any }) {
 
           {/* photos */}
           <motion.div style={{ display: "flex", gap: 6, marginTop: 14 }} variants={listContainer} initial="hidden" animate="show">
-            {t.photos.map((p) => (
-              <motion.img key={p} variants={tilePop} src={img(220, 220, p)} style={{ flex: 1, height: 96, objectFit: "cover", borderRadius: 10, minWidth: 0 }} />
+            {t.photos.map((p, n) => (
+              <motion.button
+                key={p}
+                variants={tilePop}
+                whileTap={{ scale: 0.96 }}
+                onClick={() =>
+                  nav.push({
+                    screen: "photos",
+                    params: {
+                      shots: t.photos,
+                      index: n,
+                      initial: "D",
+                      color: "var(--our)",
+                      title: `Photos from ${t.title}`,
+                      sub: t.sub,
+                    },
+                  })
+                }
+                aria-label={`Open photo ${n + 1} of ${t.photos.length}`}
+                style={{ flex: 1, minWidth: 0, borderRadius: 10, overflow: "hidden", lineHeight: 0 }}
+              >
+                <img src={img(220, 220, p)} alt="" style={{ width: "100%", height: 96, objectFit: "cover", display: "block" }} />
+              </motion.button>
             ))}
           </motion.div>
 
