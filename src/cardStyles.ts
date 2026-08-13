@@ -62,3 +62,28 @@ export const TIER_STYLE: Record<CardTier, TierStyle> = {
     sub: "rgba(140,163,184,0.7)",
   },
 };
+
+/**
+ * Sunday Draft leaves the collectible finishes undesigned on purpose.
+ *
+ * The six tiers above are the most speculative idea in the product, and dressing
+ * them in foil and glow oversold them — people reacted to the finishes rather
+ * than to whether a card is worth having at all. Here every tier collapses to
+ * the same light grey block. The concept stays legible (cards exist, they have
+ * tiers, they carry a rating and a headline) while the design plainly announces
+ * that it has not been resolved.
+ *
+ * `light: true` keeps the rarity chip's border dark enough to read on grey.
+ */
+export const DRAFT_TIER_STYLE: TierStyle = {
+  bg: "var(--elevated)",
+  border: "var(--line)",
+  ink: "var(--ink)",
+  accent: "var(--mist)",
+  sub: "var(--faint)",
+  light: true,
+};
+
+export function tierStyle(tier: CardTier, draft: boolean): TierStyle {
+  return draft ? DRAFT_TIER_STYLE : TIER_STYLE[tier];
+}

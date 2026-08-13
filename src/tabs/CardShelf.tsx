@@ -3,10 +3,12 @@ import { useNav } from "../nav";
 import Icon from "../components/Icon";
 import { listContainer, tilePop, fadeUp } from "../motion";
 import { cards, img, seasonStats, TIER_META, type MatchCard, type ShelfCard } from "../data";
-import { TIER_STYLE } from "../cardStyles";
+import { tierStyle } from "../cardStyles";
+import { useTheme } from "../theme";
 
 export default function CardShelf() {
   const nav = useNav();
+  const draft = useTheme().theme === "draft";
   const pct = Math.round((seasonStats.minted / seasonStats.total) * 100);
 
   return (
@@ -22,7 +24,7 @@ export default function CardShelf() {
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          style={{ height: "100%", background: "linear-gradient(90deg,var(--amber),var(--heat))" }}
+          style={{ height: "100%", background: draft ? "var(--mist)" : "linear-gradient(90deg,var(--amber),var(--heat))" }}
         />
       </div>
 
@@ -33,7 +35,7 @@ export default function CardShelf() {
         animate="show"
       >
         {cards.map((c) => (
-          <Tile key={c.id} card={c} onOpen={() => nav.push({ screen: "cardDetail", params: { id: c.id } })} />
+          <Tile key={c.id} card={c} draft={draft} onOpen={() => nav.push({ screen: "cardDetail", params: { id: c.id } })} />
         ))}
       </motion.div>
 
@@ -52,7 +54,7 @@ export default function CardShelf() {
   );
 }
 
-function Tile({ card, onOpen }: { card: ShelfCard; onOpen: () => void }) {
+function Tile({ card, draft, onOpen }: { card: ShelfCard; draft: boolean; onOpen: () => void }) {
   if (card.locked) {
     return (
       <motion.div
@@ -66,7 +68,7 @@ function Tile({ card, onOpen }: { card: ShelfCard; onOpen: () => void }) {
   }
 
   const c = card as MatchCard;
-  const t = TIER_STYLE[c.tier];
+  const t = tierStyle(c.tier, draft);
   const meta = TIER_META[c.tier];
   const hero = c.span === "hero";
   const wide = c.span === "wide";
@@ -100,8 +102,10 @@ function Tile({ card, onOpen }: { card: ShelfCard; onOpen: () => void }) {
     return (
       <motion.button variants={tilePop} whileTap={{ scale: 0.97 }} onClick={onOpen} style={{ ...base, padding: 16, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
         {t.foil && <span className="foil" />}
-        <span className="display" style={{ position: "absolute", right: -8, bottom: -26, fontSize: 150, lineHeight: 1, color: t.accent, opacity: 0.13 }}>9</span>
-        {c.photo && (
+        {!draft && (
+          <span className="display" style={{ position: "absolute", right: -8, bottom: -26, fontSize: 150, lineHeight: 1, color: t.accent, opacity: 0.13 }}>9</span>
+        )}
+        {!draft && c.photo && (
           <img src={img(220, 220, c.photo)} alt="" style={{ position: "absolute", right: -14, top: 14, width: 118, height: 118, objectFit: "cover", borderRadius: 12, opacity: 0.22, transform: "rotate(6deg)" }} />
         )}
         <div style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>

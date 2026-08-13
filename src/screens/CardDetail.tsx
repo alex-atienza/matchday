@@ -4,7 +4,8 @@ import CountUp from "../components/CountUp";
 import DetailHeader from "../components/DetailHeader";
 import { listContainer, listItem, tilePop, fadeUp } from "../motion";
 import { getCard, img, TIER_META } from "../data";
-import { TIER_STYLE } from "../cardStyles";
+import { tierStyle } from "../cardStyles";
+import { useTheme } from "../theme";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -16,7 +17,8 @@ function splitNum(v: string): { n: number | null; dec: number; suf: string } {
 
 export default function CardDetail({ params }: { params?: { id?: string } }) {
   const c = getCard(params?.id ?? "M9");
-  const t = TIER_STYLE[c.tier];
+  const draft = useTheme().theme === "draft";
+  const t = tierStyle(c.tier, draft);
   const meta = TIER_META[c.tier];
 
   return (
@@ -32,8 +34,10 @@ export default function CardDetail({ params }: { params?: { id?: string } }) {
             style={{ position: "relative", overflow: "hidden", borderRadius: 20, padding: 20, background: t.bg, border: `1px solid ${t.border}`, boxShadow: t.glow }}
           >
             {t.foil && <span className="foil" />}
-            <span className="display" style={{ position: "absolute", right: -10, bottom: -34, fontSize: 190, lineHeight: 1, color: t.accent, opacity: 0.12 }}>9</span>
-            {c.photo && (
+            {!draft && (
+              <span className="display" style={{ position: "absolute", right: -10, bottom: -34, fontSize: 190, lineHeight: 1, color: t.accent, opacity: 0.12 }}>9</span>
+            )}
+            {!draft && c.photo && (
               <img src={img(240, 240, c.photo)} alt="" style={{ position: "absolute", right: -18, top: 18, width: 130, height: 130, objectFit: "cover", borderRadius: 14, opacity: 0.2, transform: "rotate(6deg)" }} />
             )}
 
