@@ -47,7 +47,7 @@ export default function HomeHero() {
 
       {/* wordmark + avatar */}
       <div style={{ position: "absolute", top: "calc(18px + env(safe-area-inset-top, 0px))", left: 20, right: 20, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span className="display" style={{ fontSize: 17, letterSpacing: "0.06em", color: "var(--ink)" }}>
+        <span className="display" style={{ fontSize: 17, letterSpacing: "0.06em", color: "var(--on-media)" }}>
           Matchday
         </span>
         <div className="avatar" style={{ width: 34, height: 34, fontSize: 15 }}>M</div>
@@ -62,13 +62,20 @@ export default function HomeHero() {
           </span>
         </motion.div>
 
-        <motion.h1 {...rise(0.18)} className="display" style={{ margin: "10px 0 0", fontSize: 54, lineHeight: 0.86 }}>
+        <motion.h1
+          {...rise(0.18)}
+          className="display"
+          style={{ margin: "10px 0 0", fontSize: 54, lineHeight: 0.86, color: "var(--on-media)" }}
+        >
           Maya scored
           <br />
           twice
         </motion.h1>
 
-        <motion.p {...rise(0.26)} style={{ margin: "10px 0 0", fontSize: 14.5, fontWeight: 500, color: "var(--body)" }}>
+        <motion.p
+          {...rise(0.26)}
+          style={{ margin: "10px 0 0", fontSize: 14.5, fontWeight: 500, color: "var(--on-media-dim)" }}
+        >
           Ravens {last.score} {last.opponent.split(" ")[0]} · {last.moments.length} key moments
         </motion.p>
 

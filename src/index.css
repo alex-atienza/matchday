@@ -1,4 +1,10 @@
-/* Matchday — Direction A "Under the Lights" — design tokens + globals */
+/* Matchday — design tokens + globals
+ *
+ * Two directions live here. The `:root` block below is Direction A, "Under the
+ * Lights" — it stays the unconditional default, so A renders exactly as it always
+ * has even if the data-theme attribute is never set. Direction D, "Sunday Draft",
+ * is a `:root[data-theme="draft"]` override block at the foot of this file.
+ */
 
 :root {
   /* color */
@@ -19,6 +25,14 @@
   --card-navy: #16224d;
   --card-navy-2: #0e1633;
   --card-blue: #8fb0ff;
+
+  /* Text sitting on a photo or scrim. Near-white in BOTH directions — a hero
+     image is a dark context no matter which way the rest of the app runs, so
+     this must not follow --ink when Sunday Draft inverts it. The values are
+     exactly A's --ink and --body, so Direction A renders as it always has;
+     only Sunday Draft sees any difference. */
+  --on-media: #f5f7f4;
+  --on-media-dim: #d7deda;
 
   /* type */
   --font-display: "Barlow Condensed", system-ui, sans-serif;
@@ -402,4 +416,143 @@ img {
 .press:active {
   transform: scale(0.975);
   opacity: 0.9;
+}
+
+/* ==========================================================================
+   Direction D — "Sunday Draft"
+   Overrides only. Everything not restated here inherits Direction A.
+   ========================================================================== */
+
+:root[data-theme="draft"] {
+  /* surfaces: paper, newsprint, hairline */
+  --bg: #ffffff;
+  --tunnel: #ffffff;
+  --surface: #ffffff;
+  --elevated: #f4f4f5;
+  --line: #e4e4e7;
+
+  /* THE OVERLOADED TOKEN.
+     In Direction A, --amber does at least six different jobs: emphasis, action,
+     the "draw" result, the "maybe" RSVP, Maya's personal colour, and pure
+     decoration. Sunday Draft answers each of those differently, so pointing it
+     at one blue is deliberately WRONG — it is a way to make all ~93 call sites
+     visible at once. Splitting this into role tokens is step 3. */
+  --amber: #2c5ff6;
+  --heat: #1d3fb0;
+
+  /* text: dark on light, inverted from A */
+  --ink: #18181b;
+  --body: #3f3f46;
+  --mist: #71717a;
+  --faint: #a1a1aa;
+
+  /* semantic results */
+  --our: #15803d;
+  --their: #b91c1c;
+  --away: #71717a;
+
+  /* Sunday Draft squares things off: 10px everywhere, no pills. */
+  --r-card: 10px;
+  --r-pill: 10px;
+
+  color-scheme: light;
+}
+
+/* --- surfaces that carry hardcoded values in Direction A --- */
+:root[data-theme="draft"] .app-viewport {
+  background: #e7e7ea;
+}
+:root[data-theme="draft"] .phone {
+  box-shadow:
+    0 0 0 10px #ffffff,
+    0 0 0 11px #d4d4d8,
+    0 40px 80px -28px rgba(24, 24, 27, 0.22);
+}
+
+/* --- components whose Direction A styling is more than colour --- */
+:root[data-theme="draft"] .avatar {
+  background: var(--elevated);
+  color: var(--mist);
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 14px;
+}
+:root[data-theme="draft"] .eyebrow,
+:root[data-theme="draft"] .app-header .kicker {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+:root[data-theme="draft"] .btn {
+  font-weight: 500;
+}
+:root[data-theme="draft"] .btn-secondary {
+  border-color: #d4d4d8;
+  color: var(--ink);
+  font-weight: 500;
+}
+:root[data-theme="draft"] .chip {
+  border-radius: 999px;
+}
+
+/* --- decoration Sunday Draft does not have ---
+   These are removed rather than recoloured. A blue glow is still a glow. */
+:root[data-theme="draft"] .tab-pill {
+  background: transparent;
+}
+:root[data-theme="draft"] .glow-amber {
+  filter: none;
+}
+:root[data-theme="draft"] .pulse-glow {
+  animation: none;
+  box-shadow: none;
+}
+:root[data-theme="draft"] .play-pulse {
+  animation: none;
+}
+:root[data-theme="draft"] .foil {
+  display: none;
+}
+
+/* ==========================================================================
+   Direction switch — page chrome, not app UI. Identical in both directions
+   on purpose, so it never reads as part of the product.
+   ========================================================================== */
+
+.theme-switch {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 100;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(24, 24, 27, 0.14);
+  box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  font-family: "Inter", system-ui, sans-serif;
+}
+.theme-switch button {
+  padding: 7px 13px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #52525b;
+  white-space: nowrap;
+}
+.theme-switch button[aria-pressed="true"] {
+  background: #18181b;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Once the phone goes full-bleed there is nowhere to put the switch that is not
+   on top of the app, so it goes away — use ?theme=draft on a handset. */
+@media (max-width: 460px), (max-height: 920px) {
+  .theme-switch {
+    display: none;
+  }
 }
