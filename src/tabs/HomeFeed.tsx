@@ -6,6 +6,7 @@ import GoalTrail from "../components/GoalTrail";
 import CountUp from "../components/CountUp";
 import { listContainer, listItem } from "../motion";
 import { agoLabel, homeFeed, img, nextMatch, type FeedItem } from "../data";
+import { useTheme } from "../theme";
 
 export default function HomeFeed() {
   const nav = useNav();
@@ -63,6 +64,7 @@ export default function HomeFeed() {
 
 function FeedRow({ item }: { item: FeedItem }) {
   const nav = useNav();
+  const draft = useTheme().theme === "draft";
   const ago = agoLabel(item.hours);
 
   /* ---------- the marquee: a goal you can replay ---------- */
@@ -82,7 +84,7 @@ function FeedRow({ item }: { item: FeedItem }) {
             <GoalTrail w={326} h={150} a={[40, 120]} b={[165, 80]} c={[290, 60]} />
             <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <div className="play-pulse" style={{ width: 52, height: 52, borderRadius: 26, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px -4px rgba(255,184,0,0.6)" }}>
-                <Icon name="play" size={22} color="var(--bg)" />
+                <Icon name="play" size={22} color="var(--on-accent)" />
               </div>
             </div>
           </Pitch>
@@ -107,20 +109,24 @@ function FeedRow({ item }: { item: FeedItem }) {
       <motion.button
         whileTap={{ scale: 0.98 }}
         onClick={() => nav.push({ screen: "replay", params: { id: "m9", min: 41 } })}
-        style={{ width: "100%", textAlign: "left", borderRadius: 18, padding: "16px 18px", background: "linear-gradient(120deg,var(--amber),var(--heat))", display: "flex", alignItems: "center", gap: 14, boxShadow: "0 0 26px -10px rgba(255,77,0,0.7)" }}
+        style={
+          draft
+            ? { width: "100%", textAlign: "left", borderRadius: "var(--r-card)", padding: "16px 18px", background: "var(--surface)", border: "1px solid var(--line)", display: "flex", alignItems: "center", gap: 14 }
+            : { width: "100%", textAlign: "left", borderRadius: 18, padding: "16px 18px", background: "linear-gradient(120deg,var(--amber),var(--heat))", display: "flex", alignItems: "center", gap: 14, boxShadow: "0 0 26px -10px rgba(255,77,0,0.7)" }
+        }
       >
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="eyebrow" style={{ color: "rgba(12,14,16,0.72)", fontSize: 9 }}>{item.label} · {ago}</div>
+          <div className="eyebrow" style={{ color: draft ? "var(--mist)" : "var(--on-accent-dim)", fontSize: 9 }}>{item.label} · {ago}</div>
           <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 4 }}>
-            <span className="display" style={{ fontSize: 44, lineHeight: 0.9, color: "var(--bg)" }}>
+            <span className="display" style={{ fontSize: 44, lineHeight: 0.9, color: draft ? "var(--ink)" : "var(--on-accent)" }}>
               <CountUp to={item.value} decimals={1} duration={1} delay={0.1} />
             </span>
-            <span className="display" style={{ fontSize: 17, color: "rgba(12,14,16,0.75)" }}>{item.unit}</span>
+            <span className="display" style={{ fontSize: 17, color: draft ? "var(--mist)" : "var(--on-accent-dim)" }}>{item.unit}</span>
           </div>
-          <div style={{ fontSize: 12.5, fontWeight: 600, color: "rgba(12,14,16,0.78)", marginTop: 4 }}>{item.sub}</div>
+          <div style={{ fontSize: 12.5, fontWeight: 600, color: draft ? "var(--body)" : "var(--on-accent-dim)", marginTop: 4 }}>{item.sub}</div>
         </div>
-        <div style={{ width: 44, height: 44, borderRadius: 22, border: "2px solid rgba(12,14,16,0.5)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <Icon name="bolt" size={22} color="var(--bg)" />
+        <div style={{ width: 44, height: 44, borderRadius: 22, border: `2px solid ${draft ? "var(--line)" : "var(--on-accent-line)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <Icon name="bolt" size={22} color={draft ? "var(--mist)" : "var(--on-accent)"} />
         </div>
       </motion.button>
     );
@@ -130,7 +136,8 @@ function FeedRow({ item }: { item: FeedItem }) {
   if (item.type === "milestone") {
     return (
       <div className="card" style={{ position: "relative", overflow: "hidden", padding: "16px 18px", display: "flex", alignItems: "center", gap: 16 }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(80% 130% at 6% 50%, rgba(255,184,0,0.16), transparent 62%)" }} />
+        {/* Sunday Draft has no decorative washes */}
+        {!draft && <div style={{ position: "absolute", inset: 0, background: "radial-gradient(80% 130% at 6% 50%, rgba(255,184,0,0.16), transparent 62%)" }} />}
         <div className="display" style={{ position: "relative", fontSize: 54, lineHeight: 0.85, color: "var(--amber)", flexShrink: 0 }}>
           <CountUp to={item.value} duration={0.9} delay={0.1} />
         </div>
@@ -154,7 +161,7 @@ function FeedRow({ item }: { item: FeedItem }) {
     return (
       <div className="card" style={{ overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "12px 14px 10px" }}>
-          <div style={{ width: 32, height: 32, borderRadius: 16, background: "var(--our)", color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 13, flexShrink: 0 }}>
+          <div style={{ width: 32, height: 32, borderRadius: 16, background: "var(--our)", color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 13, flexShrink: 0 }}>
             {item.who.slice(0, 1)}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -179,7 +186,7 @@ function FeedRow({ item }: { item: FeedItem }) {
                 >
                   <img src={img(300, 300, s)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   {isLast && (
-                    <span style={{ position: "absolute", inset: 0, background: "rgba(5,7,10,0.62)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <span className="on-media" style={{ position: "absolute", inset: 0, background: "rgba(5,7,10,0.62)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <span className="display" style={{ fontSize: 22, color: "var(--ink)" }}>+{item.shots.length - 2}</span>
                     </span>
                   )}
@@ -204,16 +211,18 @@ function FeedRow({ item }: { item: FeedItem }) {
         <div
           style={{
             width: 48, height: 66, borderRadius: 8, flexShrink: 0, transform: "rotate(-5deg)",
-            background: "linear-gradient(150deg,#6b4e12 0%,#33260a 46%,#120d04 100%)",
-            border: "1px solid var(--amber)", boxShadow: "0 6px 16px -6px rgba(255,184,0,0.55)",
+            // Sunday Draft leaves the collectible finishes undesigned — see cardStyles.ts
+            background: draft ? "var(--elevated)" : "linear-gradient(150deg,#6b4e12 0%,#33260a 46%,#120d04 100%)",
+            border: `1px solid ${draft ? "var(--line)" : "var(--amber)"}`,
+            boxShadow: draft ? undefined : "0 6px 16px -6px rgba(255,184,0,0.55)",
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2,
           }}
         >
-          <span className="display" style={{ fontSize: 18, color: "#FFF3D4", lineHeight: 1 }}>{item.cardId}</span>
-          <span className="mono" style={{ fontSize: 9, color: "var(--amber)" }}>{item.rating.toFixed(1)}</span>
+          <span className="display" style={{ fontSize: 18, color: draft ? "var(--ink)" : "#FFF3D4", lineHeight: 1 }}>{item.cardId}</span>
+          <span className="mono" style={{ fontSize: 9, color: draft ? "var(--mist)" : "var(--amber)" }}>{item.rating.toFixed(1)}</span>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="eyebrow" style={{ color: "var(--amber)", fontSize: 9 }}>Legendary · just minted</div>
+          <div className="eyebrow" style={{ color: draft ? "var(--mist)" : "var(--amber)", fontSize: 9 }}>Legendary · just minted</div>
           <div style={{ fontWeight: 700, fontSize: 14.5, color: "var(--ink)", marginTop: 3 }}>{item.title}</div>
           <div className="muted" style={{ fontSize: 12.5, marginTop: 2 }}>{item.sub} · {ago}</div>
         </div>
@@ -225,7 +234,7 @@ function FeedRow({ item }: { item: FeedItem }) {
   /* ---------- the quiet beat: someone reacted — contained, just lighter ---------- */
   return (
     <div className="card" style={{ display: "flex", alignItems: "center", gap: 11, padding: "11px 13px" }}>
-      <div style={{ width: 28, height: 28, borderRadius: 14, background: item.color, color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 12, flexShrink: 0 }}>
+      <div style={{ width: 28, height: 28, borderRadius: 14, background: item.color, color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 12, flexShrink: 0 }}>
         {item.initial}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>

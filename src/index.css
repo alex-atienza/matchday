@@ -34,6 +34,13 @@
   --on-media: #f5f7f4;
   --on-media-dim: #d7deda;
 
+  /* Text and hairlines sitting on the accent colour — the filled amber chips,
+     the sprint tile, the "hot" stat. A's amber is light so this is near-black;
+     Draft's blueprint is dark so it flips to white. */
+  --on-accent: #0c0e10;
+  --on-accent-dim: rgba(12, 14, 16, 0.75);
+  --on-accent-line: rgba(12, 14, 16, 0.5);
+
   /* type */
   --font-display: "Barlow Condensed", system-ui, sans-serif;
   --font-ui: "Inter", system-ui, sans-serif;
@@ -279,7 +286,7 @@ img {
   height: 38px;
   border-radius: 19px;
   background: var(--amber);
-  color: var(--bg);
+  color: var(--on-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -332,7 +339,7 @@ img {
 }
 .btn-primary {
   background: var(--amber);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 .btn-secondary {
   border: 1px solid var(--line);
@@ -354,7 +361,7 @@ img {
 }
 .chip.active {
   background: var(--amber);
-  color: var(--bg);
+  color: var(--on-accent);
   border-color: var(--amber);
   font-weight: 700;
 }
@@ -419,11 +426,51 @@ img {
 }
 
 /* ==========================================================================
+   On-media scope
+   Any subtree sitting on a photograph, a dark scrim, or an immersive player.
+   A photo is a dark context however the app is themed, so the text tokens are
+   re-bound to their light values here instead of following the direction.
+   Every value below is Direction A's, so A renders exactly as before — this
+   only stops Sunday Draft from putting near-black text on a dark image.
+   ========================================================================== */
+
+.on-media {
+  --bg: #0c0e10;
+  --tunnel: #05070a;
+  --surface: rgba(20, 32, 26, 0.82);
+  --elevated: #1b2a21;
+  --line: #2c4436;
+  --ink: var(--on-media);
+  --body: var(--on-media-dim);
+  --mist: #93a29b;
+  --faint: #5a6b62;
+}
+
+/* Same light-on-dark logic, but neutral greys rather than A's greens. The
+   semantic colours also lift: Draft's pitch green and flag red are chosen to
+   sit on paper, and both go muddy against a photograph. */
+:root[data-theme="draft"] .on-media {
+  --surface: rgba(9, 11, 13, 0.62);
+  --elevated: rgba(9, 11, 13, 0.72);
+  --line: rgba(245, 247, 244, 0.24);
+  --mist: rgba(245, 247, 244, 0.74);
+  --faint: rgba(245, 247, 244, 0.5);
+  --our: #4ade80;
+  --their: #fca5a5;
+  --away: #cbd5e1;
+}
+
+/* ==========================================================================
    Direction D — "Sunday Draft"
    Overrides only. Everything not restated here inherits Direction A.
    ========================================================================== */
 
 :root[data-theme="draft"] {
+  /* blueprint is dark, so anything sitting on it flips to white */
+  --on-accent: #ffffff;
+  --on-accent-dim: rgba(255, 255, 255, 0.8);
+  --on-accent-line: rgba(255, 255, 255, 0.55);
+
   /* surfaces: paper, newsprint, hairline */
   --bg: #ffffff;
   --tunnel: #ffffff;

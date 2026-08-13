@@ -6,6 +6,7 @@ import CountUp from "../components/CountUp";
 import AppHeader from "../components/AppHeader";
 import { listContainer, listItem, fadeUp } from "../motion";
 import { fixtures, leagueTable, matches, nextMatch, type Fixture, type Match } from "../data";
+import { useTheme } from "../theme";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 type Rsvp = null | "yes" | "maybe" | "no";
@@ -95,10 +96,12 @@ export default function Schedule() {
 /* ---------------- next match ---------------- */
 function NextMatch({ fixture, rsvp, setRsvp }: { fixture: Fixture; rsvp: Rsvp; setRsvp: (r: Rsvp) => void }) {
   const going = (fixture.coming ?? 0) + (rsvp === "yes" ? 1 : 0);
+  const draft = useTheme().theme === "draft";
 
   return (
     <motion.div variants={fadeUp} initial="hidden" animate="show" className="card" style={{ position: "relative", overflow: "hidden", padding: 18 }}>
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(80% 120% at 12% 0%, rgba(255,184,0,0.16), transparent 60%)" }} />
+      {/* Sunday Draft has no decorative washes */}
+      {!draft && <div style={{ position: "absolute", inset: 0, background: "radial-gradient(80% 120% at 12% 0%, rgba(255,184,0,0.16), transparent 60%)" }} />}
       <div style={{ position: "relative" }}>
         <div className="eyebrow" style={{ color: "var(--amber)" }}>Next match · {fixture.date}</div>
 
