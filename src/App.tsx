@@ -14,6 +14,7 @@ import MomentThread from "./screens/MomentThread";
 import ManageCircle from "./screens/ManageCircle";
 import PlayerProfile from "./screens/PlayerProfile";
 import PhotoViewer from "./screens/PhotoViewer";
+import DirectionSheet from "./components/DirectionSheet";
 
 const IMMERSIVE = new Set(["replay", "photos"]);
 const EASE = [0.32, 0.72, 0, 1] as const;
@@ -147,6 +148,8 @@ export default function App() {
               )}
             </AnimatePresence>
           </div>
+
+          <DirectionSheet />
         </NavContext.Provider>
       </div>
     </div>

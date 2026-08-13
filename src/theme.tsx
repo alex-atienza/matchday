@@ -68,9 +68,19 @@ export function applyThemeToDom(theme: Theme) {
   window.history.replaceState(null, "", url);
 }
 
-const ThemeContext = createContext<{ theme: Theme; setTheme: (t: Theme) => void }>({
+type ThemeValue = {
+  theme: Theme;
+  setTheme: (t: Theme) => void;
+  /** the in-app direction picker, opened from the profile avatar */
+  pickerOpen: boolean;
+  setPickerOpen: (open: boolean) => void;
+};
+
+const ThemeContext = createContext<ThemeValue>({
   theme: "lights",
   setTheme: () => {},
+  pickerOpen: false,
+  setPickerOpen: () => {},
 });
 
 /** Read the active direction. Component-level variants will hang off this. */
@@ -80,6 +90,7 @@ export function useTheme() {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(initialTheme);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const setTheme = useCallback((next: Theme) => {
     setThemeState(next);
@@ -103,5 +114,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [theme, setTheme]);
 
-  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme, pickerOpen, setPickerOpen }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }

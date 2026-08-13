@@ -9,7 +9,8 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export default function HomeHero() {
   const nav = useNav();
   const reduce = useReducedMotion();
-  const draft = useTheme().theme === "draft";
+  const { theme, setPickerOpen } = useTheme();
+  const draft = theme === "draft";
   const last = matches[0];
 
   const rise = (delay: number) => ({
@@ -55,7 +56,15 @@ export default function HomeHero() {
         <span className="display" style={{ fontSize: 17, letterSpacing: "0.06em", color: "var(--ink)" }}>
           Matchday
         </span>
-        <div className="avatar" style={{ width: 34, height: 34, fontSize: 15 }}>M</div>
+        {/* doubles as the prototype's direction picker */}
+        <button
+          className="avatar press"
+          aria-label="Design direction"
+          onClick={() => setPickerOpen(true)}
+          style={{ width: 34, height: 34, fontSize: 15 }}
+        >
+          M
+        </button>
       </div>
 
       {/* headline block */}
