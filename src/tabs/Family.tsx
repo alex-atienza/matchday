@@ -126,8 +126,8 @@ function PostCard({ post }: { post: FamilyPost }) {
         onClick={post.kind === "photos" ? openThread : undefined}
         style={{ display: "flex", alignItems: "center", gap: 11, width: "100%", textAlign: "left", cursor: post.kind === "photos" ? "pointer" : "default" }}
       >
-        <div style={{ width: 34, height: 34, borderRadius: post.kind === "card" ? 6 : 17, background: post.kind === "card" ? "linear-gradient(160deg,#16224d,#0E1633)" : post.color, border: post.kind === "card" ? "1px solid var(--amber)" : "none", color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: post.kind === "card" ? 11 : 14, flexShrink: 0 }}>
-          {post.kind === "card" ? <span className="display" style={{ color: "var(--amber)", fontSize: 12 }}>{post.initial}</span> : post.initial}
+        <div style={{ width: 34, height: 34, borderRadius: 17, background: post.color, color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, flexShrink: 0 }}>
+          {post.initial}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 700, fontSize: 14, color: "var(--ink)" }}>{post.title}</div>
@@ -175,12 +175,6 @@ function PostCard({ post }: { post: FamilyPost }) {
               <Icon name="play" size={18} color="var(--on-accent)" />
             </div>
           </div>
-        </button>
-      )}
-
-      {post.kind === "card" && (
-        <button className="press" onClick={() => nav.push({ screen: "cardDetail", params: { id: "M9" } })} style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8, color: "var(--amber)", fontSize: 13, fontWeight: 700 }}>
-          View card <Icon name="chevronRight" size={15} color="var(--amber)" />
         </button>
       )}
 

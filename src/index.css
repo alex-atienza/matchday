@@ -22,8 +22,6 @@
   --our: #3dbb6e;
   --their: #e5484d;
   --away: #8ca3b8;
-  --card-navy: #16224d;
-  --card-navy-2: #0e1633;
   --card-blue: #8fb0ff;
 
   /* Text sitting on a photo or scrim. Near-white in BOTH directions — a hero
@@ -186,47 +184,17 @@ img {
     opacity: 0;
   }
 }
-@keyframes foilSweep {
-  0% {
-    transform: translateX(-140%) skewX(-18deg);
-    opacity: 0;
-  }
-  14% {
-    opacity: 1;
-  }
-  52% {
-    opacity: 1;
-  }
-  66%,
-  100% {
-    transform: translateX(260%) skewX(-18deg);
-    opacity: 0;
-  }
-}
 .pulse-glow {
   animation: pulseGlow 1.8s ease-in-out infinite;
 }
 .play-pulse {
   animation: playPulse 2.1s ease-in-out infinite;
 }
-.foil {
-  position: absolute;
-  top: -10%;
-  bottom: -10%;
-  width: 42%;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  animation: foilSweep 4.6s ease-in-out infinite;
-}
 
 @media (prefers-reduced-motion: reduce) {
   .pulse-glow,
   .play-pulse {
     animation: none;
-  }
-  .foil {
-    animation: none;
-    opacity: 0;
   }
 }
 
@@ -591,10 +559,7 @@ img {
 :root[data-theme="draft"] .play-pulse {
   animation: none;
 }
-:root[data-theme="draft"] .foil {
-  display: none;
-}
-
+:root[data-theme="draft"] 
 /* ==========================================================================
    Direction switch — page chrome, not app UI. Identical in both directions
    on purpose, so it never reads as part of the product.

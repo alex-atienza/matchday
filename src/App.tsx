@@ -9,7 +9,6 @@ import Schedule from "./tabs/Schedule";
 import Family from "./tabs/Family";
 import MatchHub from "./screens/MatchHub";
 import ReplayPlayer from "./screens/ReplayPlayer";
-import CardDetail from "./screens/CardDetail";
 import MomentThread from "./screens/MomentThread";
 import ManageCircle from "./screens/ManageCircle";
 import PlayerProfile from "./screens/PlayerProfile";
@@ -41,8 +40,6 @@ function render(route: Route | undefined, tab: TabKey) {
       return <MatchHub params={p} />;
     case "replay":
       return <ReplayPlayer params={p} />;
-    case "cardDetail":
-      return <CardDetail params={p} />;
     case "momentThread":
       return <MomentThread params={p} />;
     case "manageCircle":

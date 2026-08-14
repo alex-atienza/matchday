@@ -3,15 +3,14 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useNav } from "../nav";
 import Icon from "../components/Icon";
 import CountUp from "../components/CountUp";
-import CardShelf from "./CardShelf";
 import { listContainer, listItem, tilePop, fadeUp } from "../motion";
 import {
-  badgesByPlayer, cardsByPlayer, formFor, img, keepsakeByPlayer, weekByPlayer, type Badge,
+  badgesByPlayer, formFor, img, keepsakeByPlayer, weekByPlayer, type Badge,
 } from "../data";
 import { followedPlayers, type Player as P } from "../squad";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-type Section = "season" | "cards" | "keepsake";
+type Section = "season" | "keepsake";
 
 export default function Player() {
   const players = followedPlayers();
@@ -51,7 +50,7 @@ export default function Player() {
           <WeekCard player={player} />
 
           <div style={{ display: "flex", gap: 4, background: "var(--surface)", border: "1px solid var(--line)", borderRadius: 12, padding: 4, marginTop: 16 }}>
-            {([["season", "Season"], ["cards", "Cards"], ["keepsake", "Keepsake"]] as const).map(([k, label]) => {
+            {([["season", "Season"], ["keepsake", "Keepsake"]] as const).map(([k, label]) => {
               const on = section === k;
               return (
                 <motion.button key={k} onClick={() => setSection(k)} whileTap={{ scale: 0.97 }} aria-pressed={on} style={{ position: "relative", flex: 1, padding: "9px 0", borderRadius: 9 }}>
@@ -72,7 +71,6 @@ export default function Player() {
               style={{ marginTop: 18 }}
             >
               {section === "season" && <Season player={player} />}
-              {section === "cards" && <CardsSection player={player} />}
               {section === "keepsake" && <Keepsake player={player} />}
             </motion.div>
           </AnimatePresence>
@@ -295,13 +293,6 @@ function BadgeTile({ badge }: { badge: Badge }) {
       <div style={{ fontSize: 10, color: on ? "var(--mist)" : "var(--faint)", marginTop: 2, lineHeight: 1.3 }}>{badge.note}</div>
     </motion.div>
   );
-}
-
-/* ---------------- cards ---------------- */
-function CardsSection({ player }: { player: P }) {
-  const set = cardsByPlayer[player.id];
-  if (!set) return <Empty icon="cards" title={`No cards yet for ${player.name}`} sub="Cards are minted after each match she plays." />;
-  return <CardShelf />;
 }
 
 /* ---------------- keepsake ---------------- */

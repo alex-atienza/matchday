@@ -199,38 +199,6 @@ function FeedRow({ item }: { item: FeedItem }) {
     );
   }
 
-  /* ---------- a collectible, shown as one ---------- */
-  if (item.type === "card") {
-    return (
-      <motion.button
-        whileTap={{ scale: 0.98 }}
-        className="card"
-        onClick={() => nav.push({ screen: "cardDetail", params: { id: item.cardId } })}
-        style={{ display: "flex", alignItems: "center", gap: 14, padding: 14, width: "100%", textAlign: "left" }}
-      >
-        <div
-          style={{
-            width: 48, height: 66, borderRadius: 8, flexShrink: 0, transform: "rotate(-5deg)",
-            // Sunday Draft leaves the collectible finishes undesigned — see cardStyles.ts
-            background: draft ? "var(--elevated)" : "linear-gradient(150deg,#6b4e12 0%,#33260a 46%,#120d04 100%)",
-            border: `1px solid ${draft ? "var(--line)" : "var(--amber)"}`,
-            boxShadow: draft ? undefined : "0 6px 16px -6px rgba(255,184,0,0.55)",
-            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2,
-          }}
-        >
-          <span className="display" style={{ fontSize: 18, color: draft ? "var(--ink)" : "#FFF3D4", lineHeight: 1 }}>{item.cardId}</span>
-          <span className="mono" style={{ fontSize: 9, color: draft ? "var(--mist)" : "var(--amber)" }}>{item.rating.toFixed(1)}</span>
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="eyebrow" style={{ color: draft ? "var(--mist)" : "var(--amber)", fontSize: 9 }}>Legendary · just minted</div>
-          <div style={{ fontWeight: 700, fontSize: 14.5, color: "var(--ink)", marginTop: 3 }}>{item.title}</div>
-          <div className="muted" style={{ fontSize: 12.5, marginTop: 2 }}>{item.sub} · {ago}</div>
-        </div>
-        <Icon name="chevronRight" size={18} color="var(--mist)" />
-      </motion.button>
-    );
-  }
-
   /* ---------- the quiet beat: someone reacted — contained, just lighter ---------- */
   return (
     <div className="card" style={{ display: "flex", alignItems: "center", gap: 11, padding: "11px 13px" }}>

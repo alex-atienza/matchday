@@ -213,10 +213,12 @@ function Squad({ match }: { match: Match }) {
               <div style={{ fontWeight: 700, fontSize: 14.5, color: p.isMaya ? "var(--amber)" : "var(--ink)" }}>{p.name}</div>
               <div className="muted" style={{ fontSize: 12 }}>{p.pos} · {line.mins}'</div>
             </div>
+            {/* Goals and assists only. A bare speed number down the right-hand
+                edge of a list of children reads as a score for each kid, which
+                is not what this product is for. */}
             <div style={{ display: "flex", gap: 5, alignItems: "center", flexShrink: 0 }}>
               {line.goals > 0 && <Pip label={`${line.goals}G`} color="var(--our)" />}
               {line.assists > 0 && <Pip label={`${line.assists}A`} color="var(--card-blue)" />}
-              <span className="mono" style={{ fontSize: 11, color: "var(--mist)", width: 42, textAlign: "right" }}>{line.kmh.toFixed(1)}</span>
             </div>
             <Icon name="chevronRight" size={16} color="var(--mist)" />
           </motion.button>
