@@ -49,7 +49,7 @@ export default function PlayerProfile({ params }: { params: { id: string; matchI
             <div
               style={{
                 width: 72, height: 72, borderRadius: 36, flexShrink: 0, position: "relative",
-                background: p.color, color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center",
+                background: p.color, color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center",
                 fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 30,
                 boxShadow: p.isMaya ? "0 0 22px -4px rgba(255,184,0,0.7)" : "none",
               }}

@@ -37,7 +37,7 @@ export default function ManageCircle(_: { params?: any }) {
           <motion.div className="card" style={{ overflow: "hidden" }} variants={listContainer} initial="hidden" animate="show">
             {circle.map((m, i) => (
               <motion.div key={m.name} variants={listItem} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderTop: i ? "1px solid var(--line)" : "none" }}>
-                <div style={{ width: 38, height: 38, borderRadius: 19, background: m.color, color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 15, flexShrink: 0 }}>{m.initial}</div>
+                <div style={{ width: 38, height: 38, borderRadius: 19, background: m.color, color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 15, flexShrink: 0 }}>{m.initial}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 700, fontSize: 14.5, color: "var(--ink)" }}>{m.name}</div>
                   <div className="muted" style={{ fontSize: 12.5 }}>{m.role}</div>

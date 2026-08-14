@@ -34,7 +34,7 @@ export default function MomentThread(_: { params?: any }) {
               <GoalTrail w={326} h={170} a={[40, 140]} b={[165, 90]} c={[292, 64]} />
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <div className="play-pulse" style={{ width: 54, height: 54, borderRadius: 27, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px -4px rgba(255,184,0,0.6)" }}>
-                  <Icon name="play" size={22} color="var(--bg)" />
+                  <Icon name="play" size={22} color="var(--on-accent)" />
                 </div>
               </div>
             </Pitch>
@@ -90,7 +90,7 @@ export default function MomentThread(_: { params?: any }) {
           <div className="stack" style={{ gap: 14 }}>
             {comments.map((cm, i) => (
               <motion.div key={i} layout initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 420, damping: 30 }} style={{ display: "flex", gap: 11 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 16, background: cm.color, color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 13, flexShrink: 0 }}>{cm.initial}</div>
+                <div style={{ width: 32, height: 32, borderRadius: 16, background: cm.color, color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 13, flexShrink: 0 }}>{cm.initial}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13.5, color: "var(--body)", lineHeight: 1.4 }}>
                     <b style={{ color: "var(--ink)" }}>{cm.who}</b> {cm.text}

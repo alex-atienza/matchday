@@ -3,15 +3,14 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useNav } from "../nav";
 import Icon from "../components/Icon";
 import CountUp from "../components/CountUp";
-import CardShelf from "./CardShelf";
 import { listContainer, listItem, tilePop, fadeUp } from "../motion";
 import {
-  badgesByPlayer, cardsByPlayer, formFor, img, keepsakeByPlayer, weekByPlayer, type Badge,
+  badgesByPlayer, formFor, img, keepsakeByPlayer, weekByPlayer, type Badge,
 } from "../data";
 import { followedPlayers, type Player as P } from "../squad";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-type Section = "season" | "cards" | "keepsake";
+type Section = "season" | "keepsake";
 
 export default function Player() {
   const players = followedPlayers();
@@ -51,7 +50,7 @@ export default function Player() {
           <WeekCard player={player} />
 
           <div style={{ display: "flex", gap: 4, background: "var(--surface)", border: "1px solid var(--line)", borderRadius: 12, padding: 4, marginTop: 16 }}>
-            {([["season", "Season"], ["cards", "Cards"], ["keepsake", "Keepsake"]] as const).map(([k, label]) => {
+            {([["season", "Season"], ["keepsake", "Keepsake"]] as const).map(([k, label]) => {
               const on = section === k;
               return (
                 <motion.button key={k} onClick={() => setSection(k)} whileTap={{ scale: 0.97 }} aria-pressed={on} style={{ position: "relative", flex: 1, padding: "9px 0", borderRadius: 9 }}>
@@ -72,7 +71,6 @@ export default function Player() {
               style={{ marginTop: 18 }}
             >
               {section === "season" && <Season player={player} />}
-              {section === "cards" && <CardsSection player={player} />}
               {section === "keepsake" && <Keepsake player={player} />}
             </motion.div>
           </AnimatePresence>
@@ -98,13 +96,13 @@ function Hero({ player }: { player: P }) {
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,7,10,0.5) 0%, rgba(5,7,10,0.1) 34%, rgba(12,14,16,0.86) 76%, var(--bg) 100%)" }} />
 
       <div style={{ position: "absolute", top: "calc(18px + env(safe-area-inset-top, 0px))", right: 20 }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "var(--amber)", color: "var(--bg)", borderRadius: 16, padding: "7px 13px", fontSize: 12.5, fontWeight: 800 }}>
-          <Icon name="check" size={13} color="var(--bg)" />
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "var(--amber)", color: "var(--on-accent)", borderRadius: 16, padding: "7px 13px", fontSize: 12.5, fontWeight: 800 }}>
+          <Icon name="check" size={13} color="var(--on-accent)" />
           Following
         </span>
       </div>
 
-      <div style={{ position: "absolute", left: 20, right: 20, bottom: 16 }}>
+      <div className="on-media" style={{ position: "absolute", left: 20, right: 20, bottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span className="pulse-glow" style={{ width: 7, height: 7, borderRadius: 4, background: "var(--amber)" }} />
           <span className="eyebrow" style={{ color: "var(--amber)" }}>Live tracker · #{player.num}</span>
@@ -125,11 +123,11 @@ function Hero({ player }: { player: P }) {
             { label: "Assists", value: player.season.assists, dec: 0, hot: false },
             { label: "Top km/h", value: player.season.topKmh, dec: 1, hot: true },
           ].map((s) => (
-            <div key={s.label} className="card" style={{ flex: 1, textAlign: "center", padding: "10px 4px", background: s.hot ? "var(--amber)" : "rgba(20,32,26,0.82)", borderColor: s.hot ? "var(--amber)" : "var(--line)" }}>
-              <div className="display" style={{ fontSize: 24, lineHeight: 1, color: s.hot ? "var(--bg)" : "var(--ink)" }}>
+            <div key={s.label} className="card" style={{ flex: 1, textAlign: "center", padding: "10px 4px", background: s.hot ? "var(--amber)" : "var(--surface)", borderColor: s.hot ? "var(--amber)" : "var(--line)" }}>
+              <div className="display" style={{ fontSize: 24, lineHeight: 1, color: s.hot ? "var(--on-accent)" : "var(--ink)" }}>
                 <CountUp to={s.value} decimals={s.dec} duration={0.9} delay={0.2} />
               </div>
-              <div className="eyebrow" style={{ fontSize: 8.5, marginTop: 2, color: s.hot ? "rgba(12,14,16,0.7)" : "var(--mist)" }}>{s.label}</div>
+              <div className="eyebrow" style={{ fontSize: 8.5, marginTop: 2, color: s.hot ? "var(--on-accent-dim)" : "var(--mist)" }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -185,8 +183,8 @@ function WeekCard({ player }: { player: P }) {
 function MiniStat({ value, label, hot }: { value: number; label: string; hot?: boolean }) {
   return (
     <div style={{ flex: 1, textAlign: "center", background: hot ? "var(--amber)" : "var(--elevated)", borderRadius: 10, padding: "8px 4px" }}>
-      <div className="display" style={{ fontSize: 19, lineHeight: 1, color: hot ? "var(--bg)" : "var(--ink)" }}>{value}</div>
-      <div className="eyebrow" style={{ fontSize: 8.5, marginTop: 3, color: hot ? "rgba(12,14,16,0.7)" : "var(--mist)" }}>{label}</div>
+      <div className="display" style={{ fontSize: 19, lineHeight: 1, color: hot ? "var(--on-accent)" : "var(--ink)" }}>{value}</div>
+      <div className="eyebrow" style={{ fontSize: 8.5, marginTop: 3, color: hot ? "var(--on-accent-dim)" : "var(--mist)" }}>{label}</div>
     </div>
   );
 }
@@ -255,13 +253,13 @@ function Season({ player }: { player: P }) {
               animate="show"
               style={{ display: "flex", alignItems: "center", gap: 14, borderRadius: 16, padding: 14, background: "linear-gradient(120deg,var(--amber),var(--heat))", marginBottom: 12 }}
             >
-              <div style={{ width: 48, height: 48, borderRadius: 24, border: "2px solid rgba(12,14,16,0.55)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Icon name="trophy" size={22} color="var(--bg)" />
+              <div style={{ width: 48, height: 48, borderRadius: 24, border: "2px solid var(--on-accent-line)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Icon name="trophy" size={22} color="var(--on-accent)" />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="eyebrow" style={{ color: "rgba(12,14,16,0.72)", fontSize: 9 }}>Just unlocked</div>
-                <div className="display" style={{ fontSize: 22, lineHeight: 1, color: "var(--bg)", marginTop: 2 }}>{fresh.name}</div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(12,14,16,0.75)", marginTop: 2 }}>{fresh.note}</div>
+                <div className="eyebrow" style={{ color: "var(--on-accent-dim)", fontSize: 9 }}>Just unlocked</div>
+                <div className="display" style={{ fontSize: 22, lineHeight: 1, color: "var(--on-accent)", marginTop: 2 }}>{fresh.name}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--on-accent-dim)", marginTop: 2 }}>{fresh.note}</div>
               </div>
             </motion.div>
           )}
@@ -297,13 +295,6 @@ function BadgeTile({ badge }: { badge: Badge }) {
   );
 }
 
-/* ---------------- cards ---------------- */
-function CardsSection({ player }: { player: P }) {
-  const set = cardsByPlayer[player.id];
-  if (!set) return <Empty icon="cards" title={`No cards yet for ${player.name}`} sub="Cards are minted after each match she plays." />;
-  return <CardShelf />;
-}
-
 /* ---------------- keepsake ---------------- */
 function Keepsake({ player }: { player: P }) {
   const nav = useNav();
@@ -326,10 +317,10 @@ function Keepsake({ player }: { player: P }) {
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(5,7,10,0.25),rgba(5,7,10,0.88))" }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div className="play-pulse" style={{ width: 58, height: 58, borderRadius: 29, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 22px -4px rgba(255,184,0,0.65)" }}>
-            <Icon name="play" size={24} color="var(--bg)" />
+            <Icon name="play" size={24} color="var(--on-accent)" />
           </div>
         </div>
-        <div style={{ position: "absolute", left: 16, right: 16, bottom: 14 }}>
+        <div className="on-media" style={{ position: "absolute", left: 16, right: 16, bottom: 14 }}>
           <div className="eyebrow" style={{ color: "var(--amber)" }}>Season film · {keepsake.filmLength}</div>
           <div className="display" style={{ fontSize: 30, lineHeight: 1, marginTop: 3 }}>{keepsake.filmTitle}</div>
           <div className="muted" style={{ fontSize: 12.5, marginTop: 3 }}>{keepsake.filmNote}</div>

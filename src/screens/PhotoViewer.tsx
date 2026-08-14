@@ -43,7 +43,7 @@ export default function PhotoViewer({ params }: { params: PhotoParams }) {
   };
 
   return (
-    <div className="screen" style={{ background: "#05070A", position: "relative" }}>
+    <div className="screen on-media" style={{ background: "var(--tunnel)", position: "relative" }}>
       {/* top bar */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "calc(18px + env(safe-area-inset-top, 0px)) 16px 10px", flexShrink: 0, zIndex: 5 }}>
         <motion.button whileTap={{ scale: 0.9 }} onClick={nav.back} aria-label="Close photos" style={{ display: "flex" }}>
@@ -107,7 +107,7 @@ export default function PhotoViewer({ params }: { params: PhotoParams }) {
       <div style={{ flexShrink: 0, padding: "12px 16px calc(14px + env(safe-area-inset-bottom,8px))", background: "var(--bg)", borderTop: "1px solid var(--line)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
           {params.initial && (
-            <div style={{ width: 32, height: 32, borderRadius: 16, background: params.color ?? "var(--our)", color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 13, flexShrink: 0 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 16, background: params.color ?? "var(--our)", color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 13, flexShrink: 0 }}>
               {params.initial}
             </div>
           )}

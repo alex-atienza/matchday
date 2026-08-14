@@ -159,7 +159,7 @@ export default function ReplayPlayer({ params }: { params: ReplayParams }) {
   const animKey = `${cursor.id}:${cursor.min}:${runId}`;
 
   return (
-    <div className="screen" style={{ background: "var(--tunnel)", position: "relative" }}>
+    <div className="screen on-media" style={{ background: "var(--tunnel)", position: "relative" }}>
       {/* top bar */}
       <motion.div
         initial={{ opacity: 0, y: reduce ? 0 : -12 }}
@@ -293,7 +293,7 @@ export default function ReplayPlayer({ params }: { params: ReplayParams }) {
                 initial={{ left: maya.xs[0], top: maya.ys[0] }}
                 animate={{ left: maya.xs, top: maya.ys }}
                 transition={{ delay: DELAY, duration: reduce ? 0 : dur, times: maya.times, ease: "easeOut" }}
-                style={{ position: "absolute", width: 22, height: 22, borderRadius: 11, marginLeft: -11, marginTop: -11, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 12, color: "var(--bg)", zIndex: 2 }}
+                style={{ position: "absolute", width: 22, height: 22, borderRadius: 11, marginLeft: -11, marginTop: -11, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 12, color: "var(--on-accent)", zIndex: 2 }}
               >
                 9
               </motion.span>
@@ -302,7 +302,7 @@ export default function ReplayPlayer({ params }: { params: ReplayParams }) {
                 className="pulse-glow"
                 animate={{ scale: celebrate && cel.confetti ? [1, 1.7, 1.15] : 1 }}
                 transition={{ duration: 0.6, ease: EASE }}
-                style={{ position: "absolute", left: pctX(play.maya[0]), top: pctY(play.maya[1]), width: 22, height: 22, borderRadius: 11, marginLeft: -11, marginTop: -11, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 12, color: "var(--bg)", zIndex: 2 }}
+                style={{ position: "absolute", left: pctX(play.maya[0]), top: pctY(play.maya[1]), width: 22, height: 22, borderRadius: 11, marginLeft: -11, marginTop: -11, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 12, color: "var(--on-accent)", zIndex: 2 }}
               >
                 9
               </motion.span>
@@ -312,10 +312,10 @@ export default function ReplayPlayer({ params }: { params: ReplayParams }) {
               <motion.div
                 initial={{ opacity: 0, y: reduce ? 0 : 8, scale: reduce ? 1 : 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: 0.45, duration: 0.4, ease: EASE } }}
-                style={{ position: "absolute", left: "50%", bottom: 16, transform: "translateX(-50%)", background: "var(--amber)", color: "var(--bg)", borderRadius: 20, padding: "8px 14px", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", gap: 8, whiteSpace: "nowrap" }}
+                style={{ position: "absolute", left: "50%", bottom: 16, transform: "translateX(-50%)", background: "var(--amber)", color: "var(--on-accent)", borderRadius: 20, padding: "8px 14px", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", gap: 8, whiteSpace: "nowrap" }}
               >
                 MAYA · {match.topKmh} KM/H
-                <Icon name="bolt" size={13} color="var(--bg)" />
+                <Icon name="bolt" size={13} color="var(--on-accent)" />
               </motion.div>
             )}
           </Fragment>
@@ -352,7 +352,7 @@ export default function ReplayPlayer({ params }: { params: ReplayParams }) {
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <motion.button whileTap={{ scale: 0.92 }} onClick={() => setRunId((r) => r + 1)} aria-label={ended ? "Watch again" : "Restart"} style={{ width: 44, height: 44, borderRadius: 22, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             {ended ? (
-              <Icon name="replays" size={18} color="var(--bg)" />
+              <Icon name="replays" size={18} color="var(--on-accent)" />
             ) : (
               <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--bg)">
                 <rect x="6" y="5" width="4" height="14" rx="1" />
@@ -369,7 +369,7 @@ export default function ReplayPlayer({ params }: { params: ReplayParams }) {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 6, scale: 0.94 }}
                   transition={{ duration: 0.15 }}
-                  style={{ position: "absolute", bottom: 34, left: `${pctOf(scrubMin!)}%`, transform: "translateX(-50%)", background: "var(--amber)", color: "var(--bg)", borderRadius: 10, padding: "6px 10px", whiteSpace: "nowrap", pointerEvents: "none", maxWidth: 210, overflow: "hidden", textOverflow: "ellipsis", zIndex: 5 }}
+                  style={{ position: "absolute", bottom: 34, left: `${pctOf(scrubMin!)}%`, transform: "translateX(-50%)", background: "var(--amber)", color: "var(--on-accent)", borderRadius: 10, padding: "6px 10px", whiteSpace: "nowrap", pointerEvents: "none", maxWidth: 210, overflow: "hidden", textOverflow: "ellipsis", zIndex: 5 }}
                 >
                   <span style={{ fontWeight: 800, fontSize: 12 }}>{scrubMoment.min}' · </span>
                   <span style={{ fontWeight: 600, fontSize: 12 }}>{scrubMoment.title.split(" · ").slice(-1)[0]}</span>

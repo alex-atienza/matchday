@@ -28,7 +28,7 @@ export default function Replays() {
             onClick={() => nav.push({ screen: "matchHub", params: { id: latest.id } })}
             style={{ display: "block", width: "100%", overflow: "hidden", padding: 0, textAlign: "left" }}
           >
-            <Pitch radius={0} style={{ height: 168 }}>
+            <Pitch className="on-media" radius={0} style={{ height: 168 }}>
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(5,7,10,0) 40%,rgba(5,7,10,0.85))" }} />
               <div style={{ position: "absolute", left: 14, top: 12, display: "flex", gap: 8, alignItems: "center" }}>
                 <span className="chip active" style={{ padding: "5px 10px", fontSize: 10, letterSpacing: "0.08em" }}>LATEST</span>
@@ -36,7 +36,7 @@ export default function Replays() {
               </div>
               <div style={{ position: "absolute", right: 14, bottom: 12, top: 12, display: "flex", alignItems: "center" }}>
                 <div className="play-pulse" style={{ width: 46, height: 46, borderRadius: 23, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 18px -4px rgba(255,184,0,0.6)" }}>
-                  <Icon name="play" size={20} color="var(--bg)" />
+                  <Icon name="play" size={20} color="var(--on-accent)" />
                 </div>
               </div>
               <div style={{ position: "absolute", left: 16, bottom: 12 }}>

@@ -73,7 +73,7 @@ export default function MatchHub({ params }: { params: { id: string } }) {
               {preview.foes.map((p, i) => (
                 <span key={"f" + i} style={{ position: "absolute", left: `${(p[1] / 150) * 100}%`, top: `${p[0]}%`, width: 11, height: 11, borderRadius: 6, transform: "translate(-50%,-50%)", background: "var(--away)" }} />
               ))}
-              <span className="pulse-glow" style={{ position: "absolute", left: `${(preview.maya[1] / 150) * 100}%`, top: `${preview.maya[0]}%`, width: 20, height: 20, borderRadius: 10, transform: "translate(-50%,-50%)", background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 11, color: "var(--bg)" }}>9</span>
+              <span className="pulse-glow" style={{ position: "absolute", left: `${(preview.maya[1] / 150) * 100}%`, top: `${preview.maya[0]}%`, width: 20, height: 20, borderRadius: 10, transform: "translate(-50%,-50%)", background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 11, color: "var(--on-accent)" }}>9</span>
             </Pitch>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", gap: 12 }}>
               <div style={{ textAlign: "left" }}>
@@ -83,7 +83,7 @@ export default function MatchHub({ params }: { params: { id: string } }) {
                 </div>
               </div>
               <span className="btn btn-primary" style={{ fontSize: 14, padding: "11px 18px" }}>
-                <Icon name="play" size={15} color="var(--bg)" />
+                <Icon name="play" size={15} color="var(--on-accent)" />
                 Watch
               </span>
             </div>
@@ -206,17 +206,19 @@ function Squad({ match }: { match: Match }) {
             onClick={() => nav.push({ screen: "player", params: { id: p.id, matchId: match.id } })}
             style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", width: "100%", textAlign: "left", borderTop: i ? "1px solid var(--line)" : "none" }}
           >
-            <div style={{ width: 32, height: 32, borderRadius: 16, background: p.color, color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 14 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 16, background: p.color, color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 14 }}>
               {p.num}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontWeight: 700, fontSize: 14.5, color: p.isMaya ? "var(--amber)" : "var(--ink)" }}>{p.name}</div>
               <div className="muted" style={{ fontSize: 12 }}>{p.pos} · {line.mins}'</div>
             </div>
+            {/* Goals and assists only. A bare speed number down the right-hand
+                edge of a list of children reads as a score for each kid, which
+                is not what this product is for. */}
             <div style={{ display: "flex", gap: 5, alignItems: "center", flexShrink: 0 }}>
               {line.goals > 0 && <Pip label={`${line.goals}G`} color="var(--our)" />}
               {line.assists > 0 && <Pip label={`${line.assists}A`} color="var(--card-blue)" />}
-              <span className="mono" style={{ fontSize: 11, color: "var(--mist)", width: 42, textAlign: "right" }}>{line.kmh.toFixed(1)}</span>
             </div>
             <Icon name="chevronRight" size={16} color="var(--mist)" />
           </motion.button>

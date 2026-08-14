@@ -47,7 +47,7 @@ export default function Family() {
         <div style={{ display: "flex", gap: 16, overflowX: "auto", padding: "0 20px 4px" }} className="scroll">
           {circle.map((m) => (
             <button key={m.name} className="press" onClick={() => nav.push({ screen: "manageCircle" })} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, flexShrink: 0, width: 52 }}>
-              <div style={{ width: 46, height: 46, borderRadius: 23, background: m.color, color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 18 }}>{m.initial}</div>
+              <div style={{ width: 46, height: 46, borderRadius: 23, background: m.color, color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 18 }}>{m.initial}</div>
               <span style={{ fontSize: 10.5, color: "var(--mist)", fontWeight: 600 }}>{m.name.split(" ")[0]}</span>
             </button>
           ))}
@@ -126,8 +126,8 @@ function PostCard({ post }: { post: FamilyPost }) {
         onClick={post.kind === "photos" ? openThread : undefined}
         style={{ display: "flex", alignItems: "center", gap: 11, width: "100%", textAlign: "left", cursor: post.kind === "photos" ? "pointer" : "default" }}
       >
-        <div style={{ width: 34, height: 34, borderRadius: post.kind === "card" ? 6 : 17, background: post.kind === "card" ? "linear-gradient(160deg,#16224d,#0E1633)" : post.color, border: post.kind === "card" ? "1px solid var(--amber)" : "none", color: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: post.kind === "card" ? 11 : 14, flexShrink: 0 }}>
-          {post.kind === "card" ? <span className="display" style={{ color: "var(--amber)", fontSize: 12 }}>{post.initial}</span> : post.initial}
+        <div style={{ width: 34, height: 34, borderRadius: 17, background: post.color, color: "var(--on-accent)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, flexShrink: 0 }}>
+          {post.initial}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 700, fontSize: 14, color: "var(--ink)" }}>{post.title}</div>
@@ -172,15 +172,9 @@ function PostCard({ post }: { post: FamilyPost }) {
           <img src={img(320, 200, 63)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
           <div style={{ position: "absolute", inset: 0, background: "rgba(5,7,10,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div style={{ width: 44, height: 44, borderRadius: 22, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="play" size={18} color="var(--bg)" />
+              <Icon name="play" size={18} color="var(--on-accent)" />
             </div>
           </div>
-        </button>
-      )}
-
-      {post.kind === "card" && (
-        <button className="press" onClick={() => nav.push({ screen: "cardDetail", params: { id: "M9" } })} style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 8, color: "var(--amber)", fontSize: 13, fontWeight: 700 }}>
-          View card <Icon name="chevronRight" size={15} color="var(--amber)" />
         </button>
       )}
 
