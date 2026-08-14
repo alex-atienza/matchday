@@ -5,22 +5,28 @@
 export const img = (w: number, h: number, lock: number) =>
   `https://loremflickr.com/${w}/${h}/girls,soccer/all?lock=${lock}`;
 
-/* LoremFlickr gives us on-subject photos but goes down often enough to leave the
-   demo full of broken-image icons — its keyword search 500s while the rest of the
-   service stays up. Picsum is reliable but has no keyword filter, so it is the
-   fallback rather than the source.
+/* LoremFlickr gives us on-subject photos but its keyword search 500s often enough
+   to leave the demo full of broken-image icons.
 
-   The fallback is deliberately greyscaled and softly blurred. There is no
-   keyword-capable placeholder service left (source.unsplash.com was retired), so
-   an unfiltered photo would drop a sharp, identifiable and entirely wrong subject
-   into a soccer app — reviewers comment on the walrus instead of the design.
-   Desaturated and out of focus, it reads as an intentional placeholder. Full
-   colour on-subject photos come back on their own when LoremFlickr recovers.
+   The fallback is a flat tonal block, NOT another stock photo. There is no
+   keyword-capable placeholder service left — source.unsplash.com was retired and
+   Picsum has no filter — so any photo fallback drops an arbitrary subject into a
+   soccer app. We tried it and the hero filled with a walrus, which is worse than
+   a broken icon: people talk about the walrus instead of the design.
 
-   Both services are seeded, so a given `lock` is stable across reloads.
+   It is a translucent grey so it works over either direction's background without
+   knowing which one is active, and it is a data URI so it renders instantly, works
+   offline, and can never itself fail. On-subject photos return by themselves when
+   LoremFlickr recovers.
+
    Spread onto an <img> or a motion.img:  <img {...photo(400, 300, 12)} /> */
-const fallbackImg = (w: number, h: number, lock: number) =>
-  `https://picsum.photos/seed/matchday${lock}/${w}/${h}?grayscale&blur=5`;
+const fallbackImg = (w: number, h: number) => {
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">` +
+    `<rect width="${w}" height="${h}" fill="rgb(128,132,136)" fill-opacity="0.22"/>` +
+    `</svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+};
 
 export const photo = (w: number, h: number, lock: number) => ({
   src: img(w, h, lock),
@@ -28,7 +34,7 @@ export const photo = (w: number, h: number, lock: number) => ({
     const el = e.currentTarget;
     if (el.dataset.fallback) return; // already swapped — don't loop
     el.dataset.fallback = "1";
-    el.src = fallbackImg(w, h, lock);
+    el.src = fallbackImg(w, h);
   },
 });
 
