@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useNav } from "../nav";
 import Icon from "../components/Icon";
-import { img } from "../data";
+import { photo } from "../data";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -62,7 +62,7 @@ export default function PhotoViewer({ params }: { params: PhotoParams }) {
         <AnimatePresence initial={false} custom={dir} mode="popLayout">
           <motion.img
             key={shots[i]}
-            src={img(900, 1200, shots[i])}
+            {...photo(900, 1200, shots[i])}
             alt={params.title ?? "Match photo"}
             custom={dir}
             variants={variants}
@@ -141,7 +141,7 @@ export default function PhotoViewer({ params }: { params: PhotoParams }) {
                 aria-label={`Photo ${n + 1}`}
                 style={{ flexShrink: 0, borderRadius: 8, overflow: "hidden", border: n === i ? "2px solid var(--amber)" : "2px solid transparent", opacity: n === i ? 1 : 0.55, lineHeight: 0 }}
               >
-                <img src={img(120, 120, s)} alt="" style={{ width: 48, height: 48, objectFit: "cover", display: "block" }} />
+                <img {...photo(120, 120, s)} alt="" style={{ width: 48, height: 48, objectFit: "cover", display: "block" }} />
               </motion.button>
             ))}
           </div>

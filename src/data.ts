@@ -5,6 +5,33 @@
 export const img = (w: number, h: number, lock: number) =>
   `https://loremflickr.com/${w}/${h}/girls,soccer/all?lock=${lock}`;
 
+/* LoremFlickr gives us on-subject photos but goes down often enough to leave the
+   demo full of broken-image icons — its keyword search 500s while the rest of the
+   service stays up. Picsum is reliable but has no keyword filter, so it is the
+   fallback rather than the source.
+
+   The fallback is deliberately greyscaled and softly blurred. There is no
+   keyword-capable placeholder service left (source.unsplash.com was retired), so
+   an unfiltered photo would drop a sharp, identifiable and entirely wrong subject
+   into a soccer app — reviewers comment on the walrus instead of the design.
+   Desaturated and out of focus, it reads as an intentional placeholder. Full
+   colour on-subject photos come back on their own when LoremFlickr recovers.
+
+   Both services are seeded, so a given `lock` is stable across reloads.
+   Spread onto an <img> or a motion.img:  <img {...photo(400, 300, 12)} /> */
+const fallbackImg = (w: number, h: number, lock: number) =>
+  `https://picsum.photos/seed/matchday${lock}/${w}/${h}?grayscale&blur=5`;
+
+export const photo = (w: number, h: number, lock: number) => ({
+  src: img(w, h, lock),
+  onError: (e: { currentTarget: HTMLImageElement }) => {
+    const el = e.currentTarget;
+    if (el.dataset.fallback) return; // already swapped — don't loop
+    el.dataset.fallback = "1";
+    el.src = fallbackImg(w, h, lock);
+  },
+});
+
 export const player = {
   first: "Maya",
   num: 9,

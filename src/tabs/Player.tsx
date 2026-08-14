@@ -5,7 +5,7 @@ import Icon from "../components/Icon";
 import CountUp from "../components/CountUp";
 import { listContainer, listItem, tilePop, fadeUp } from "../motion";
 import {
-  badgesByPlayer, formFor, img, keepsakeByPlayer, weekByPlayer, type Badge,
+  badgesByPlayer, formFor, photo, keepsakeByPlayer, weekByPlayer, type Badge,
 } from "../data";
 import { followedPlayers, type Player as P } from "../squad";
 
@@ -86,7 +86,7 @@ function Hero({ player }: { player: P }) {
   return (
     <div style={{ position: "relative", height: 372, flexShrink: 0, overflow: "hidden" }}>
       <motion.img
-        src={img(800, 900, 58)}
+        {...photo(800, 900, 58)}
         alt=""
         initial={{ scale: reduce ? 1 : 1.1 }}
         animate={{ scale: 1 }}
@@ -154,7 +154,7 @@ function WeekCard({ player }: { player: P }) {
     >
       <div style={{ padding: 14 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <img src={img(160, 160, week.photo)} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
+          <img {...photo(160, 160, week.photo)} alt="" style={{ width: 52, height: 52, borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div className="eyebrow" style={{ color: "var(--amber)", fontSize: 9.5, whiteSpace: "nowrap" }}>
               Sunday digest · {week.range}
@@ -313,7 +313,7 @@ function Keepsake({ player }: { player: P }) {
         onClick={() => nav.push({ screen: "replay", params: { id: "m9", min: 58 } })}
         style={{ position: "relative", display: "block", width: "100%", height: 200, borderRadius: 18, overflow: "hidden", border: "1px solid var(--line)", textAlign: "left" }}
       >
-        <img src={img(700, 500, keepsake.photo)} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+        <img {...photo(700, 500, keepsake.photo)} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(5,7,10,0.25),rgba(5,7,10,0.88))" }} />
         <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div className="play-pulse" style={{ width: 58, height: 58, borderRadius: 29, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 22px -4px rgba(255,184,0,0.65)" }}>

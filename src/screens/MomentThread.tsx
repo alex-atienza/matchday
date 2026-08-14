@@ -6,7 +6,7 @@ import Pitch from "../components/Pitch";
 import GoalTrail from "../components/GoalTrail";
 import DetailHeader from "../components/DetailHeader";
 import { listContainer, tilePop, fadeUp } from "../motion";
-import { img, momentThread } from "../data";
+import { photo, momentThread } from "../data";
 
 type Comment = { who: string; initial: string; color: string; text: string; ago: string };
 
@@ -80,7 +80,7 @@ export default function MomentThread(_: { params?: any }) {
                 aria-label={`Open photo ${n + 1} of ${t.photos.length}`}
                 style={{ flex: 1, minWidth: 0, borderRadius: 10, overflow: "hidden", lineHeight: 0 }}
               >
-                <img src={img(220, 220, p)} alt="" style={{ width: "100%", height: 96, objectFit: "cover", display: "block" }} />
+                <img {...photo(220, 220, p)} alt="" style={{ width: "100%", height: 96, objectFit: "cover", display: "block" }} />
               </motion.button>
             ))}
           </motion.div>

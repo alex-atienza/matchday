@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { useNav } from "../nav";
 import Icon from "../components/Icon";
-import { img, matches } from "../data";
+import { photo, matches } from "../data";
 import { useTheme } from "../theme";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -23,7 +23,7 @@ export default function HomeHero() {
     <div style={{ position: "relative", height: 400, flexShrink: 0, overflow: "hidden" }}>
       {/* photo */}
       <motion.img
-        src={img(800, 900, 77)}
+        {...photo(800, 900, 77)}
         alt=""
         initial={{ scale: reduce ? 1 : 1.12 }}
         animate={{ scale: 1 }}

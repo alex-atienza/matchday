@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNav } from "../nav";
 import Icon from "../components/Icon";
 import Reactions from "../components/Reactions";
-import { circle, familyFeed, img, nextMatch, type FamilyPost } from "../data";
+import { circle, familyFeed, photo, nextMatch, type FamilyPost } from "../data";
 
 type Rsvp = null | "yes" | "maybe" | "no";
 
@@ -161,7 +161,7 @@ function PostCard({ post }: { post: FamilyPost }) {
               aria-label={`Open photo ${n + 1} of ${post.photos!.length}`}
               style={{ flex: 1, minWidth: 0, borderRadius: 10, overflow: "hidden", lineHeight: 0 }}
             >
-              <img src={img(240, 200, s)} alt="" style={{ width: "100%", height: 118, objectFit: "cover", display: "block" }} />
+              <img {...photo(240, 200, s)} alt="" style={{ width: "100%", height: 118, objectFit: "cover", display: "block" }} />
             </motion.button>
           ))}
         </div>
@@ -169,7 +169,7 @@ function PostCard({ post }: { post: FamilyPost }) {
 
       {post.kind === "clip" && (
         <button className="press" onClick={() => nav.push({ screen: "replay", params: { id: "m9" } })} style={{ position: "relative", display: "block", width: "100%", height: 118, marginTop: 10, borderRadius: 10, overflow: "hidden" }}>
-          <img src={img(320, 200, 63)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+          <img {...photo(320, 200, 63)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
           <div style={{ position: "absolute", inset: 0, background: "rgba(5,7,10,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div style={{ width: 44, height: 44, borderRadius: 22, background: "var(--amber)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Icon name="play" size={18} color="var(--on-accent)" />

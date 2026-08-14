@@ -5,7 +5,7 @@ import Pitch from "../components/Pitch";
 import GoalTrail from "../components/GoalTrail";
 import CountUp from "../components/CountUp";
 import { listContainer, listItem } from "../motion";
-import { agoLabel, homeFeed, img, nextMatch, type FeedItem } from "../data";
+import { agoLabel, homeFeed, photo, nextMatch, type FeedItem } from "../data";
 import { useTheme } from "../theme";
 
 export default function HomeFeed() {
@@ -171,7 +171,7 @@ function FeedRow({ item }: { item: FeedItem }) {
         </div>
         <div style={{ display: "flex", gap: 4, padding: "0 14px 12px", height: 168 }}>
           <motion.button whileTap={{ scale: 0.98 }} onClick={() => open(0)} aria-label="Open photo 1" style={{ flex: 1.6, minWidth: 0, borderRadius: 12, overflow: "hidden", lineHeight: 0 }}>
-            <img src={img(400, 400, lead)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            <img {...photo(400, 400, lead)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
           </motion.button>
           <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
             {rest.slice(0, 2).map((s, n) => {
@@ -184,7 +184,7 @@ function FeedRow({ item }: { item: FeedItem }) {
                   aria-label={`Open photo ${n + 2}`}
                   style={{ flex: 1, minWidth: 0, borderRadius: 12, overflow: "hidden", position: "relative", lineHeight: 0 }}
                 >
-                  <img src={img(300, 300, s)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  <img {...photo(300, 300, s)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   {isLast && (
                     <span className="on-media" style={{ position: "absolute", inset: 0, background: "rgba(5,7,10,0.62)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <span className="display" style={{ fontSize: 22, color: "var(--ink)" }}>+{item.shots.length - 2}</span>
